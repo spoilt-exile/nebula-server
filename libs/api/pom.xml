@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>tk.freaxsoftware.nebula.server</groupId>
+        <artifactId>libs</artifactId>
+        <version>0.1</version>
+    </parent>
+    <groupId>tk.freaxsoftware.nebula.server.lib</groupId>
+    <artifactId>api</artifactId>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+    <name>Nebula System :: Libraries :: Api :: v.0.1</name>
+    <description>Nebula system plugin API interfaces with examples.</description>
+    <version>0.1</version>
+    <developers>
+        <developer>
+            <id>spoilt</id>
+            <name>Stanislav Nepochatov</name>
+            <organization>Freax Software</organization>
+            <organizationUrl>freaxsoftware.tk</organizationUrl>
+            <email>spoilt@blackstarfilm.com</email>
+        </developer>
+    </developers>
+</project>
