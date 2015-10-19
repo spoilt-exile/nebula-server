@@ -13,7 +13,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
-    <name>Nebula System :: Libraries :: Api :: v.0.1</name>
+    <name>Nebula System :: Libraries :: Api :: v.${project.version}</name>
     <description>Nebula system plugin API interfaces with examples.</description>
     <version>0.1</version>
     <developers>

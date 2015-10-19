@@ -2,19 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>tk.freaxsoftware.nebula</groupId>
-        <artifactId>server</artifactId>
+        <groupId>tk.freaxsoftware.nebula.server</groupId>
+        <artifactId>libs</artifactId>
         <version>0.1</version>
     </parent>
-    <groupId>tk.freaxsoftware.nebula.server</groupId>
-    <artifactId>libs</artifactId>
-    <packaging>pom</packaging>
-    <name>Nebula System :: Libraries :: v.0.1</name>
-    <description>Nebula system generic libraries for server;</description>
-    <modules>
-        <module>api</module>
-        <module>localehandler</module>
-    </modules>
+    <groupId>tk.freaxsoftware.nebula.server.lib</groupId>
+    <artifactId>LocaleHandler</artifactId>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+    <name>Nebula System :: Libraries :: LocaleHandler :: v.${project.version}</name>
+    <description>Locale requests handler for Nebula system.</description>
     <developers>
         <developer>
             <id>spoilt</id>

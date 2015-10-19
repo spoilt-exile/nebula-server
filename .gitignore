@@ -1,1 +1,4 @@
 /libs/api/nb-configuration.xml
+/server/target/
+/libs/localehandler/nb-configuration.xml
+/standard/nb-configuration.xml
