@@ -52,8 +52,7 @@ public class SystemMain {
         freeExternalEngine.setConfiguration(freeExternalConfig);
         
         Spark.get("/", (req, res) -> {
-            String localeKey = req.headers("Accept-Language").split("\\,")[0];
-            LocaleHandler.Accesser lc = LocaleHandler.getAccessFor(localeKey);
+            LocaleHandler.Accesser lc = LocaleHandler.getAccessByHeader(req.headers("Accept-Language"));
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("lc", lc);
             return new ModelAndView(attributes, "locale.ftl");

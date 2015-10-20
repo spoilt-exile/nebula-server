@@ -60,6 +60,18 @@ public final class LocaleHandler {
     }
     
     /**
+     * Get access to localization information by raw {@code Accept-Language} 
+     * HTTP request header.
+     * @param headerString raw header string;
+     * @return accesser instance for access;
+     * @see Accesser
+     */
+    public static Accesser getAccessByHeader(String headerString) {
+        String localeKey = headerString.split("\\,")[0];
+        return getAccessFor(localeKey);
+    }
+    
+    /**
      * Get access to localization information.
      * @param locale locale supplied by peer;
      * @return accesser instance for access;
