@@ -48,7 +48,7 @@ public final class LocaleHandler {
     /**
      * Default locale id for fallback.
      */
-    private static String defaultLocaleKey = "en_US";
+    private static String defaultLocaleKey = "en";
     
     /**
      * Set default locale for handler. Used for fallback.
