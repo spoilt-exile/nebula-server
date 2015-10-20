@@ -37,12 +37,22 @@ import tk.freaxsoftware.nebula.server.lib.localehandler.LocaleHandler;
 public class SystemMain {
     
     private final static Logger LOGGER = LoggerFactory.getLogger(SystemMain.class);
+    
+    private static ServerConfig config;
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
         LOGGER.info("Starting Nebula server instance...");
+        
+        config = new ServerConfig();
+        Spark.port(config.getSparkPort());
+        Spark.threadPool(config.getSparkThreadPoolMax(), 
+                config.getSparkThreadPoolMin(), 30000);
+        LocaleHandler.setDefaultLocale(config.getDefaultLocale());
+        
         initLocalization();
         Spark.externalStaticFileLocation("web");
         
@@ -52,7 +62,8 @@ public class SystemMain {
         freeExternalEngine.setConfiguration(freeExternalConfig);
         
         Spark.get("/", (req, res) -> {
-            LocaleHandler.Accesser lc = LocaleHandler.getAccessByHeader(req.headers("Accept-Language"));
+            LocaleHandler.Accesser lc = LocaleHandler
+                    .getAccessByHeader(req.headers("Accept-Language"));
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("lc", lc);
             return new ModelAndView(attributes, "locale.ftl");
@@ -64,9 +75,12 @@ public class SystemMain {
      */
     private static void initLocalization() {
         try {
-            LocaleHandler.loadLocale("en", SystemMain.class.getClassLoader().getResourceAsStream("server_en_US.properties"));
-            LocaleHandler.loadLocale("ru", SystemMain.class.getClassLoader().getResourceAsStream("server_ru_RU.properties"));
-            LocaleHandler.loadLocale("uk", SystemMain.class.getClassLoader().getResourceAsStream("server_uk_UA.properties"));
+            LocaleHandler.loadLocale("en", SystemMain.class.getClassLoader()
+                    .getResourceAsStream("server_en_US.properties"));
+            LocaleHandler.loadLocale("ru", SystemMain.class.getClassLoader()
+                    .getResourceAsStream("server_ru_RU.properties"));
+            LocaleHandler.loadLocale("uk", SystemMain.class.getClassLoader()
+                    .getResourceAsStream("server_uk_UA.properties"));
         } catch (IOException ex) {
             LOGGER.error("unable to load locales", ex);
         }
