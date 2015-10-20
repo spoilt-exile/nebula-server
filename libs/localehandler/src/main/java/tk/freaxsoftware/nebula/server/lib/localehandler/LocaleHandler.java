@@ -52,7 +52,7 @@ public final class LocaleHandler {
     
     /**
      * Set default locale for handler. Used for fallback.
-     * @param locale localization id, e.g. 'en_US' or 'uk_UA'
+     * @param locale localization id, e.g. 'en' or 'uk'
      */
     public static void setDefaultLocale(String locale) {
         LOGGER.info("changing default locale " + defaultLocaleKey + " => " + locale);
