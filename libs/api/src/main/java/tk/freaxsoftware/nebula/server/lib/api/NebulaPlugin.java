@@ -80,7 +80,7 @@ public @interface NebulaPlugin {
      * Version string name for display.
      * @return version name;
      */
-    int versionName();
+    String versionName();
     
     /**
      * Flag which launces tranlation loading from plugin.
