@@ -29,6 +29,7 @@ import java.util.jar.JarFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPlugin;
+import tk.freaxsoftware.nebula.server.lib.api.NebulaPluginConflict;
 import tk.freaxsoftware.nebula.server.lib.api.Plugable;
 
 /**
@@ -60,20 +61,21 @@ public class PluginLoader {
      */
     public PluginLoader(String givenPath) {
         path = givenPath;
+        
+        records = new ArrayList<>();
+        conflicts = new ArrayList<>();
     }
     
     /**
      * Loads plugins from plugin directory, fill records and conflicts lists.
      */
     public void load() {
-        List<PluginRecord> classes = new ArrayList();
         File[] modulesRaw = new File(path).listFiles();
         if (modulesRaw != null) {
             for (File moduleFile : modulesRaw) {
-                processModule(moduleFile.getName(), path, classes);
+                processModule(moduleFile.getName(), path);
             }
         }
-        records = classes;
     }
     
     /**
@@ -82,7 +84,7 @@ public class PluginLoader {
      * @param restOfPath rest of path to this file;
      * @param classes lists of records to fill;
      */
-    private void processModule(String fileName, String restOfPath, List<PluginRecord> classes) {
+    private void processModule(String fileName, String restOfPath) {
         try {
             JarFile jarFile;
             java.net.URLClassLoader loader;
@@ -102,7 +104,7 @@ public class PluginLoader {
                         PluginRecord module = tryModuleClass(loadedClass);
                         if (module != null) {
                             LOGGER.info("Loaded module " + module.getId() + " - " + className);
-                            classes.add(module);
+                            records.add(module);
                         }
                     } catch (ClassNotFoundException ex) {
                         LOGGER.error("Can't load class " + className, ex);
@@ -127,6 +129,12 @@ public class PluginLoader {
             NebulaPlugin plugAnnotation = (NebulaPlugin) givenClass.getAnnotation(NebulaPlugin.class);
             if (plugAnnotation != null && Plugable.class.isAssignableFrom(givenClass)) {
                 Plugable pluginInstance = (Plugable) givenClass.newInstance();
+                NebulaPluginConflict[] conflicts = (NebulaPluginConflict[]) givenClass.getAnnotationsByType(NebulaPluginConflict.class);
+                if (conflicts != null) {
+                    for (NebulaPluginConflict conflictEntry: conflicts) {
+                        processModuleConflicts(plugAnnotation.id(), conflictEntry);
+                    }
+                }
                 return new PluginRecord(plugAnnotation, pluginInstance);
             } else {
                 return null;
@@ -138,6 +146,16 @@ public class PluginLoader {
             LOGGER.error("Class " + givenClass.getName() + " can't be instanced as object.", ex);
             return null;
         }
+    }
+    
+    /**
+     * Process conflict annotation on plugin class.
+     * @param pluginId plugin id which marked by conflict;
+     * @param conflict annotation extracted from class;
+     */
+    private void processModuleConflicts(String pluginId, NebulaPluginConflict conflict) {
+        LOGGER.warn("add conflicvt record for plugin " + pluginId + " with conflict id " + conflict.conflictId());
+        conflicts.add(new ConflictRecord(pluginId, conflict));
     }
     
 }
