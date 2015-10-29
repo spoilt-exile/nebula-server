@@ -4,3 +4,5 @@
 /standard/nb-configuration.xml
 /libs/localehandler/target/
 /standard/nbactions.xml
+/libs/loader/target/
+/libs/loader/nb-configuration.xml

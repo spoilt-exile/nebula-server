@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>tk.freaxsoftware.nebula.server</groupId>
+        <artifactId>libs</artifactId>
+        <version>0.1</version>
+    </parent>
+    <groupId>tk.freaxsoftware.nebula.server.lib</groupId>
+    <artifactId>loader</artifactId>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+    <name>Nebula System :: Libraries :: Loader :: v.${project.version}</name>
+    <description>Nebual plugin loader library.</description>
+    <version>0.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>tk.freaxsoftware.extras</groupId>
+            <artifactId>faststorage</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>tk.freaxsoftware.nebula.server.lib</groupId>
+            <artifactId>api</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+    <developers>
+        <developer>
+            <id>spoilt</id>
+            <name>Stanislav Nepochatov</name>
+            <organization>Freax Software</organization>
+            <organizationUrl>freaxsoftware.tk</organizationUrl>
+            <email>spoilt@blackstarfilm.com</email>
+        </developer>
+    </developers>
+</project>
