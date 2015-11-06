@@ -41,6 +41,8 @@ public class PluginLoader {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginLoader.class);
     
+    private static final Object dataLock = new Object();
+    
     /**
      * Records of plugins which were loaded into system.
      */
@@ -71,23 +73,26 @@ public class PluginLoader {
      * Load core plugins of the Nebula system.
      */
     public void loadCore() {
-        try {
-            records.add(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.core.sync.SyncPlugin")));
-            LOGGER.info("Core sync plugin loaded.");
-        } catch (ClassNotFoundException cex) {
-            LOGGER.error("unable to load core sync plugin!" , cex);
+        synchronized (dataLock) {
+            try {
+                records.add(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.core.sync.SyncPlugin")));
+                LOGGER.info("Core sync plugin loaded.");
+            } catch (ClassNotFoundException cex) {
+                LOGGER.error("unable to load core sync plugin!" , cex);
+            }
         }
-        
     }
     
     /**
      * Loads plugins from plugin directory, fill records and conflicts lists.
      */
     public void load() {
-        File[] modulesRaw = new File(path).listFiles();
-        if (modulesRaw != null) {
-            for (File moduleFile : modulesRaw) {
-                processModule(moduleFile.getName(), path);
+        synchronized (dataLock) {
+            File[] modulesRaw = new File(path).listFiles();
+            if (modulesRaw != null) {
+                for (File moduleFile : modulesRaw) {
+                    processModule(moduleFile.getName(), path);
+                }
             }
         }
     }
@@ -174,23 +179,19 @@ public class PluginLoader {
     }
     
     /**
-     * Get copy of all plugin records.
-     * @return copied list of records;
+     * Get all plugin records.
+     * @return list of records;
      */
     public List<PluginRecord> getRecords() {
-        List<PluginRecord> copyList = new ArrayList<>(records.size());
-        Collections.copy(copyList, this.records);
-        return copyList;
+        return records;
     }
     
     /**
-     * Get copy of all conflict records.
-     * @return copied list of conflicts;
+     * Get all conflict records.
+     * @return list of conflicts;
      */
     public List<ConflictRecord> getConflicts() {
-        List<ConflictRecord> copyList = new ArrayList<>(conflicts.size());
-        Collections.copy(copyList, this.conflicts);
-        return copyList;
+        return conflicts;
     }
     
     /**
@@ -235,9 +236,11 @@ public class PluginLoader {
      * @return record or null if not found;
      */
     private PluginRecord getRecordById(String pluginId) {
-        for (PluginRecord record: records) {
-            if (record.getId().equals(pluginId)) {
-                return record;
+        synchronized (dataLock) {
+            for (PluginRecord record: records) {
+                if (record.getId().equals(pluginId)) {
+                    return record;
+                }
             }
         }
         return null;

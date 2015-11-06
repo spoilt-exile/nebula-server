@@ -79,7 +79,8 @@ public class SystemMain {
                     .getAccessByHeader(req.headers("Accept-Language"));
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("lc", lc);
-            return new ModelAndView(attributes, "locale.ftl");
+            attributes.put("records", loader.getRecords());
+            return new ModelAndView(attributes, "plugin.html");
         }, freeExternalEngine);
     }
     

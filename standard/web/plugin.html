@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>${lc.server_plugin_page_title}</title>
+  </head>
+  <body>
+    <h1>${lc.server_plugin_page_header}</h1>
+    <table width="100%" border=1px>
+        <thead>
+            <tr>
+                <td>${lc.server_plugin_page_table_id}</td>
+                <td>${lc.server_plugin_page_table_type}</td>
+                <td>${lc.server_plugin_page_table_status}</td>
+                <td>${lc.server_plugin_page_table_homepage}</td>
+                <td>${lc.server_plugin_page_table_version}</td>
+            </tr>
+        </thead>
+        <tbody>
+            <#list records as record>
+                <tr>
+                    <td>${record.id}</td>
+                    <td>${record.type}</td>
+                    <td>${record.status}</td>
+                    <td><a href="${record.homepage}">${record.homepage}</a></td>
+                    <td>${record.versionName}</td>
+                </tr>
+            </#list>
+        </tbody>
+    </table>
+  </body>
+</html>
