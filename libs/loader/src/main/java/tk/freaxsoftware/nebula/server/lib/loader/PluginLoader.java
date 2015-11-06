@@ -68,6 +68,19 @@ public class PluginLoader {
     }
     
     /**
+     * Load core plugins of the Nebula system.
+     */
+    public void loadCore() {
+        try {
+            records.add(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.core.sync.SyncPlugin")));
+            LOGGER.info("Core sync plugin loaded.");
+        } catch (ClassNotFoundException cex) {
+            LOGGER.error("unable to load core sync plugin!" , cex);
+        }
+        
+    }
+    
+    /**
      * Loads plugins from plugin directory, fill records and conflicts lists.
      */
     public void load() {

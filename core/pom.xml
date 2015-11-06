@@ -23,4 +23,7 @@
             <email>spoilt@blackstarfilm.com</email>
         </developer>
     </developers>
+    <modules>
+        <module>plugin-sync</module>
+    </modules>
 </project>

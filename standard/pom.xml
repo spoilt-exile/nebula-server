@@ -60,6 +60,13 @@
             <artifactId>loader</artifactId>
             <version>0.1</version>
         </dependency>
+        
+        <!-- Nebula core plugins -->
+        <dependency>
+            <groupId>tk.freaxsoftware.nebula.server.core</groupId>
+            <artifactId>plugin-sync</artifactId>
+            <version>0.1</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

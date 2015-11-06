@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
+import tk.freaxsoftware.nebula.server.lib.loader.PluginLoader;
 import tk.freaxsoftware.nebula.server.lib.localehandler.LocaleHandler;
 
 /**
@@ -39,6 +40,8 @@ public class SystemMain {
     private final static Logger LOGGER = LoggerFactory.getLogger(SystemMain.class);
     
     private static ServerConfig config;
+    
+    private static PluginLoader loader;
 
     /**
      * @param args the command line arguments
@@ -52,6 +55,16 @@ public class SystemMain {
         Spark.threadPool(config.getSparkThreadPoolMax(), 
                 config.getSparkThreadPoolMin(), 30000);
         LocaleHandler.setDefaultLocale(config.getDefaultLocale());
+
+        File pluginFolder = new File("plugins/");
+        loader = new PluginLoader(pluginFolder.getAbsolutePath());
+        LOGGER.info("loading core plugins.");
+        loader.loadCore();
+        
+        if (config.isPluginsEnabled()) {
+            LOGGER.info("loading extra plugins.");
+            loader.load();
+        }
         
         initLocalization();
         Spark.externalStaticFileLocation("web");

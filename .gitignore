@@ -6,3 +6,5 @@
 /standard/nbactions.xml
 /libs/loader/target/
 /libs/loader/nb-configuration.xml
+/core/plugin-sync/nb-configuration.xml
+/core/plugin-sync/target/

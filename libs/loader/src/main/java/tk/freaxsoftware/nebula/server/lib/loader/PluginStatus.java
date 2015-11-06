@@ -20,7 +20,7 @@ package tk.freaxsoftware.nebula.server.lib.loader;
 
 /**
  * Plugin status in the system.
- * @author spoilt
+ * @author Stanislav Nepochatov
  */
 public enum PluginStatus {
     
