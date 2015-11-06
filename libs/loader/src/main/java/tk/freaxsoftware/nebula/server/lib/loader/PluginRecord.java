@@ -82,6 +82,12 @@ public class PluginRecord {
     private String classEntryName;
     
     /**
+     * Plugin current status.
+     * @see PluginStatus
+     */
+    private PluginStatus status;
+    
+    /**
      * Initiated plugin instance.
      */
     private transient Plugable instance;
@@ -103,6 +109,11 @@ public class PluginRecord {
         this.initLocalization = pluginAnnotation.initLocalization();
         this.classEntryName = instance.getClass().getName();
         this.instance = instance;
+        if (this.instance == null) {
+            this.status = PluginStatus.INIT_ERROR;
+        } else {
+            this.status = PluginStatus.PRESENT;
+        }
     }
     
     public String getId() {
@@ -193,6 +204,14 @@ public class PluginRecord {
         this.instance = instance;
     }
 
+    public PluginStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PluginStatus status) {
+        this.status = status;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -202,6 +221,7 @@ public class PluginRecord {
         hash = 29 * hash + this.versionCode;
         hash = 29 * hash + Objects.hashCode(this.versionName);
         hash = 29 * hash + Objects.hashCode(this.classEntryName);
+        hash = 29 * hash + Objects.hashCode(this.status);
         return hash;
     }
 
@@ -232,11 +252,14 @@ public class PluginRecord {
         if (!Objects.equals(this.classEntryName, other.classEntryName)) {
             return false;
         }
+        if (this.status != other.status) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "PluginRecord{" + "id=" + id + ", name=" + name + ", type=" + type + ", versionCode=" + versionCode + ", versionName=" + versionName + '}';
+        return "PluginRecord{" + "id=" + id + ", name=" + name + ", type=" + type + ", status=" + status + ", versionCode=" + versionCode + ", versionName=" + versionName + '}';
     }
 }

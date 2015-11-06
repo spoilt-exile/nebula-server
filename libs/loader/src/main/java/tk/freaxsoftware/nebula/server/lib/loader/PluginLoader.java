@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -125,8 +126,9 @@ public class PluginLoader {
      * @return plugin record with instance;
      */
     private PluginRecord tryModuleClass(Class givenClass) {
+        NebulaPlugin plugAnnotation = null;
         try {
-            NebulaPlugin plugAnnotation = (NebulaPlugin) givenClass.getAnnotation(NebulaPlugin.class);
+            plugAnnotation = (NebulaPlugin) givenClass.getAnnotation(NebulaPlugin.class);
             if (plugAnnotation != null && Plugable.class.isAssignableFrom(givenClass)) {
                 Plugable pluginInstance = (Plugable) givenClass.newInstance();
                 NebulaPluginConflict[] conflicts = (NebulaPluginConflict[]) givenClass.getAnnotationsByType(NebulaPluginConflict.class);
@@ -141,10 +143,10 @@ public class PluginLoader {
             }
         } catch (IllegalAccessException ex) {
             LOGGER.error("Class " + givenClass.getName() + " doesn't have public empty constructor.", ex);
-            return null;
+            return plugAnnotation != null ? new PluginRecord(plugAnnotation, null) : null;
         } catch (InstantiationException ex) {
             LOGGER.error("Class " + givenClass.getName() + " can't be instanced as object.", ex);
-            return null;
+            return plugAnnotation != null ? new PluginRecord(plugAnnotation, null) : null;
         }
     }
     
@@ -158,4 +160,73 @@ public class PluginLoader {
         conflicts.add(new ConflictRecord(pluginId, conflict));
     }
     
+    /**
+     * Get copy of all plugin records.
+     * @return copied list of records;
+     */
+    public List<PluginRecord> getRecords() {
+        List<PluginRecord> copyList = new ArrayList<>(records.size());
+        Collections.copy(copyList, this.records);
+        return copyList;
+    }
+    
+    /**
+     * Get copy of all conflict records.
+     * @return copied list of conflicts;
+     */
+    public List<ConflictRecord> getConflicts() {
+        List<ConflictRecord> copyList = new ArrayList<>(conflicts.size());
+        Collections.copy(copyList, this.conflicts);
+        return copyList;
+    }
+    
+    /**
+     * Installs plugin and call it to start. Updates plugin status 
+     * corresponding to all successfull steps.
+     * @param pluginId plugin to install and run;
+     */
+    public void installAndStart(String pluginId) {
+        PluginRecord record = getRecordById(pluginId);
+        if (record != null) {
+            LOGGER.warn("Installing plugin with id " + pluginId);
+            if (record.getStatus() != PluginStatus.INIT_ERROR) {
+                
+                //Install step
+                try {
+                    record.getInstance().install();
+                    record.setStatus(PluginStatus.INSTALLED);
+                } catch (Exception ex) {
+                    LOGGER.error("failed to install plugin " + pluginId, ex);
+                    record.setStatus(PluginStatus.INSTALL_ERROR);
+                }
+                
+                //Start step
+                try {
+                    record.getInstance().start();
+                    record.setStatus(PluginStatus.STARTED);
+                } catch (Exception ex) {
+                    LOGGER.error("failed to start plugin " + pluginId, ex);
+                    record.setStatus(PluginStatus.START_ERROR);
+                }
+            } else {
+                LOGGER.error("Pluggin unable to install or start cause initial error " + pluginId + " " + record.getStatus());
+            }
+        } else {
+            LOGGER.error("Can't install plugin with id " + pluginId + "; plugin doesn't exsist!");
+        }
+    }
+    
+    /**
+     * Get plugin record with specified id.
+     * @param pluginId id to search;
+     * @return record or null if not found;
+     */
+    private PluginRecord getRecordById(String pluginId) {
+        for (PluginRecord record: records) {
+            if (record.getId().equals(pluginId)) {
+                return record;
+            }
+        }
+        return null;
+    }
 }
