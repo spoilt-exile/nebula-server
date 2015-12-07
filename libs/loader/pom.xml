@@ -27,12 +27,6 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.12</version>
         </dependency>
-        
-        <dependency>
-            <groupId>tk.freaxsoftware.extras</groupId>
-            <artifactId>faststorage</artifactId>
-            <version>1.0</version>
-        </dependency>
         <dependency>
             <groupId>tk.freaxsoftware.nebula.server.lib</groupId>
             <artifactId>api</artifactId>
