@@ -19,6 +19,11 @@
 package tk.freaxsoftware.nebula.server.lib.loader;
 
 import java.util.Objects;
+import tk.freaxsoftware.extras.faststorage.generic.ECSVAble;
+import tk.freaxsoftware.extras.faststorage.generic.ECSVDefinition;
+import tk.freaxsoftware.extras.faststorage.generic.ECSVFields;
+import tk.freaxsoftware.extras.faststorage.reading.EntityReader;
+import tk.freaxsoftware.extras.faststorage.writing.EntityWriter;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPlugin;
 import tk.freaxsoftware.nebula.server.lib.api.Plugable;
 import tk.freaxsoftware.nebula.server.lib.api.PluginTypes;
@@ -27,7 +32,7 @@ import tk.freaxsoftware.nebula.server.lib.api.PluginTypes;
  * System record of plugin which present in the system.
  * @author Stanislav Nepochatov
  */
-public class PluginRecord {
+public class PluginRecord implements ECSVAble<String> {
     
     /**
      * Internal id of plugin in the system.
@@ -91,6 +96,22 @@ public class PluginRecord {
      * Initiated plugin instance.
      */
     private transient Plugable instance;
+    
+    /**
+     * ECSV entity definition.
+     */
+    public static ECSVDefinition DEFINITION = ECSVDefinition.createNew()
+            .addKey(String.class)
+            .addPrimitive(ECSVFields.PR_WORD)
+            .addPrimitive(ECSVFields.PR_WORD)
+            .addPrimitive(ECSVFields.PR_STRING)
+            .addPrimitive(ECSVFields.PR_STRING)
+            .addPrimitive(ECSVFields.PR_STRING)
+            .addPrimitive(ECSVFields.PR_INT)
+            .addPrimitive(ECSVFields.PR_STRING)
+            .addPrimitive(ECSVFields.PR_BOOLEAN)
+            .addPrimitive(ECSVFields.PR_WORD)
+            .addPrimitive(ECSVFields.PR_WORD);
 
     /**
      * Default constructor.
@@ -261,5 +282,45 @@ public class PluginRecord {
     @Override
     public String toString() {
         return "PluginRecord{" + "id=" + id + ", name=" + name + ", type=" + type + ", status=" + status + ", versionCode=" + versionCode + ", versionName=" + versionName + '}';
+    }
+
+    @Override
+    public String getKey() {
+        return getId();
+    }
+
+    @Override
+    public ECSVDefinition getDefinition() {
+        return DEFINITION;
+    }
+
+    @Override
+    public void readFromECSV(EntityReader<String> reader) {
+        this.id = reader.readKey();
+        this.name = reader.readWord();
+        this.type = PluginTypes.valueOf(reader.readWord());
+        this.description = reader.readString();
+        this.homepage = reader.readString();
+        this.icon = reader.readString();
+        this.versionCode = reader.readInteger();
+        this.versionName = reader.readString();
+        this.initLocalization = reader.readBoolean();
+        this.classEntryName = reader.readWord();
+        this.status = PluginStatus.valueOf(reader.readWord());
+    }
+
+    @Override
+    public void writeToECSV(EntityWriter<String> writer) {
+        writer.writeKey(id);
+        writer.writeWord(name);
+        writer.writeWord(type.name());
+        writer.writeString(description);
+        writer.writeString(homepage);
+        writer.writeString(icon);
+        writer.writeInteger(versionCode);
+        writer.writeString(versionName);
+        writer.writeBoolean(initLocalization);
+        writer.writeWord(classEntryName);
+        writer.writeWord(status.name());
     }
 }
