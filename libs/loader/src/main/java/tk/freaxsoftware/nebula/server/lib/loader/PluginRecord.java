@@ -34,6 +34,24 @@ import tk.freaxsoftware.nebula.server.lib.api.PluginTypes;
  */
 public class PluginRecord implements ECSVAble<String> {
     
+    private final static String TYPE = "PLUGIN";
+    
+    /**
+     * ECSV entity definition.
+     */
+    public final static ECSVDefinition DEFINITION = ECSVDefinition.createNew()
+            .addKey(String.class)
+            .addPrimitive(ECSVFields.PR_WORD)
+            .addPrimitive(ECSVFields.PR_WORD)
+            .addPrimitive(ECSVFields.PR_STRING)
+            .addPrimitive(ECSVFields.PR_STRING)
+            .addPrimitive(ECSVFields.PR_STRING)
+            .addPrimitive(ECSVFields.PR_INT)
+            .addPrimitive(ECSVFields.PR_STRING)
+            .addPrimitive(ECSVFields.PR_BOOLEAN)
+            .addPrimitive(ECSVFields.PR_WORD)
+            .addPrimitive(ECSVFields.PR_WORD);
+    
     /**
      * Internal id of plugin in the system.
      */
@@ -96,22 +114,6 @@ public class PluginRecord implements ECSVAble<String> {
      * Initiated plugin instance.
      */
     private transient Plugable instance;
-    
-    /**
-     * ECSV entity definition.
-     */
-    public static ECSVDefinition DEFINITION = ECSVDefinition.createNew()
-            .addKey(String.class)
-            .addPrimitive(ECSVFields.PR_WORD)
-            .addPrimitive(ECSVFields.PR_WORD)
-            .addPrimitive(ECSVFields.PR_STRING)
-            .addPrimitive(ECSVFields.PR_STRING)
-            .addPrimitive(ECSVFields.PR_STRING)
-            .addPrimitive(ECSVFields.PR_INT)
-            .addPrimitive(ECSVFields.PR_STRING)
-            .addPrimitive(ECSVFields.PR_BOOLEAN)
-            .addPrimitive(ECSVFields.PR_WORD)
-            .addPrimitive(ECSVFields.PR_WORD);
 
     /**
      * Default constructor.
@@ -322,5 +324,28 @@ public class PluginRecord implements ECSVAble<String> {
         writer.writeBoolean(initLocalization);
         writer.writeWord(classEntryName);
         writer.writeWord(status.name());
+    }
+
+    @Override
+    public void setKey(String key) {
+        //Do nothing
+    }
+
+    @Override
+    public void update(ECSVAble<String> updatedEntity) {
+        if (updatedEntity instanceof PluginRecord) {
+            PluginRecord updatedRecord = (PluginRecord) updatedEntity;
+            this.setId(updatedRecord.getId());
+            this.setName(updatedRecord.getName());
+            this.setType(updatedRecord.getType());
+            this.setDescription(updatedRecord.getDescription());
+            this.setHomepage(updatedRecord.getHomepage());
+            this.setIcon(updatedRecord.getIcon());
+            this.setVersionCode(updatedRecord.getVersionCode());
+            this.setVersionName(updatedRecord.getVersionName());
+            this.setInitLocalization(updatedRecord.isInitLocalization());
+            this.setClassEntryName(updatedRecord.getClassEntryName());
+            this.setStatus(updatedRecord.getStatus());
+        }
     }
 }

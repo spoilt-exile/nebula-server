@@ -19,13 +19,28 @@
 package tk.freaxsoftware.nebula.server.lib.loader;
 
 import java.util.Objects;
+import tk.freaxsoftware.extras.faststorage.generic.ECSVAble;
+import tk.freaxsoftware.extras.faststorage.generic.ECSVDefinition;
+import static tk.freaxsoftware.extras.faststorage.generic.ECSVFields.*;
+import tk.freaxsoftware.extras.faststorage.reading.EntityReader;
+import tk.freaxsoftware.extras.faststorage.writing.EntityWriter;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPluginConflict;
 
 /**
  * Conflict record for plugin.
  * @author spoilt
  */
-public class ConflictRecord {
+public class ConflictRecord implements ECSVAble<String> {
+    
+    private final static String TYPE = "CONFLICT";
+    
+    /**
+     * ECSV entity definition.
+     */
+    public static final ECSVDefinition DEFINITION = ECSVDefinition.createNew()
+            .addKey(String.class)
+            .addPrimitive(PR_WORD)
+            .addPrimitive(PR_STRING);
     
     /**
      * Id of plugin which adds this record to the system.
@@ -106,5 +121,39 @@ public class ConflictRecord {
     @Override
     public String toString() {
         return "ConflictRecord{" + "pluginId=" + pluginId + ", conflictId=" + conflictId + '}';
+    }
+
+    @Override
+    public String getKey() {
+        return pluginId;
+    }
+
+    @Override
+    public void setKey(String key) {
+        //Do nothing...
+    }
+
+    @Override
+    public ECSVDefinition getDefinition() {
+        return DEFINITION;
+    }
+
+    @Override
+    public void readFromECSV(EntityReader<String> reader) {
+        this.pluginId = reader.readKey();
+        this.conflictId = reader.readWord();
+        this.conflictDescription = reader.readString();
+    }
+
+    @Override
+    public void writeToECSV(EntityWriter<String> writer) {
+        writer.writeKey(pluginId);
+        writer.writeWord(conflictId);
+        writer.writeString(conflictDescription);
+    }
+
+    @Override
+    public void update(ECSVAble<String> updatedEntity) {
+        //Do nothing...
     }
 }
