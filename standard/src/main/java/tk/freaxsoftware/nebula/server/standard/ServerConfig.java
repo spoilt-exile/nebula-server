@@ -48,6 +48,11 @@ public class ServerConfig {
     private enum Options {
         
         /**
+         * Main address of this nebula instance. Used for generation permanent links.
+         */
+        NEBULA_MAIN_URL("nebula_main_url", "http://localhost:4444"),
+        
+        /**
          * Start web server on specified port.
          */
         NEBULA_SPARK_PORT("nebula_spark_port", 4444),
@@ -119,6 +124,31 @@ public class ServerConfig {
             LOGGER.error("unable to load config file", ex);
         }
         LOGGER.info("config loading complete");
+        printConfig();
+    }
+    
+    /**
+     * Print current config into log.
+     */
+    private void printConfig() {
+        LOGGER.info("===========================================================");
+        LOGGER.info("Default url: " + getDefaultUrl());
+        LOGGER.info("Spark port: " + getSparkPort());
+        LOGGER.info("Spark max threads: " + getSparkThreadPoolMax());
+        LOGGER.info("Spark min threads: " + getSparkThreadPoolMin());
+        LOGGER.info("Plugins enabled: " + isPluginsEnabled());
+        LOGGER.info("Default locale: " + getDefaultLocale());
+        LOGGER.info("===========================================================");
+    }
+    
+    /**
+     * Get Nebula instance default url.
+     * @return url of this instance root;
+     */
+    public String getDefaultUrl() {
+        return optionsProperties.containsKey(Options.NEBULA_MAIN_URL.propertyKey)
+                ? optionsProperties.getProperty(Options.NEBULA_MAIN_URL.propertyKey)
+                : Options.NEBULA_MAIN_URL.defaultValue.toString();
     }
     
     /**
