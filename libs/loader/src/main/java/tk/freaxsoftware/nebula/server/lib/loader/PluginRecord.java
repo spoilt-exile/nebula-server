@@ -348,4 +348,9 @@ public class PluginRecord implements ECSVAble<String> {
             this.setStatus(updatedRecord.getStatus());
         }
     }
+
+    @Override
+    public String getEntityType() {
+        return TYPE;
+    }
 }

@@ -156,4 +156,9 @@ public class ConflictRecord implements ECSVAble<String> {
     public void update(ECSVAble<String> updatedEntity) {
         //Do nothing...
     }
+
+    @Override
+    public String getEntityType() {
+        return TYPE;
+    }
 }
