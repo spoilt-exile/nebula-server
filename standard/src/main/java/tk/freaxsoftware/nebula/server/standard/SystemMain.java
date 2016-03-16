@@ -26,6 +26,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
+import spark.QueryParamsMap;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 import tk.freaxsoftware.nebula.server.lib.loader.PluginLoader;
@@ -82,6 +83,13 @@ public class SystemMain {
             attributes.put("records", loader.getRecords());
             return new ModelAndView(attributes, "plugin.html");
         }, freeExternalEngine);
+        
+        Spark.post("/install", (req, res) -> {
+            QueryParamsMap map = req.queryMap();
+            loader.installAndStart(map.value("recordId"));
+            res.redirect("/");
+            return null;
+        });
     }
     
     /**

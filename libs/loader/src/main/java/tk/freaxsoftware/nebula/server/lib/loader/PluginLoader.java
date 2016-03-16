@@ -232,6 +232,8 @@ public class PluginLoader {
                     LOGGER.error("failed to start plugin " + pluginId, ex);
                     record.setStatus(PluginStatus.START_ERROR);
                 }
+                
+                pluginRecordHandler.save(record);
             } else {
                 LOGGER.error("Pluggin unable to install or start cause initial error " + pluginId + " " + record.getStatus());
             }
