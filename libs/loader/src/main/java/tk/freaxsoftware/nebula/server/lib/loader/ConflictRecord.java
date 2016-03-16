@@ -32,7 +32,7 @@ import tk.freaxsoftware.nebula.server.lib.api.NebulaPluginConflict;
  */
 public class ConflictRecord implements ECSVAble<String> {
     
-    private final static String TYPE = "CONFLICT";
+    public final static String TYPE = "CONFLICT";
     
     /**
      * ECSV entity definition.
@@ -56,6 +56,8 @@ public class ConflictRecord implements ECSVAble<String> {
      * Short description about incompatibility cause.
      */
     private String conflictDescription;
+    
+    public ConflictRecord () {}
 
     /**
      * Default constructor.

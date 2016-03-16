@@ -34,7 +34,7 @@ import tk.freaxsoftware.nebula.server.lib.api.PluginTypes;
  */
 public class PluginRecord implements ECSVAble<String> {
     
-    private final static String TYPE = "PLUGIN";
+    public final static String TYPE = "PLUGIN";
     
     /**
      * ECSV entity definition.
@@ -114,6 +114,8 @@ public class PluginRecord implements ECSVAble<String> {
      * Initiated plugin instance.
      */
     private transient Plugable instance;
+    
+    public PluginRecord() {}
 
     /**
      * Default constructor.

@@ -1,0 +1,2 @@
+PLUGIN,{tk.freaxsoftware.nebula.server.lib.loader.PluginRecord},{tk.freaxsoftware.nebula.server.lib.loader.storage.PluginRecordHandler},plugins.ecsv
+CONFLICT,{tk.freaxsoftware.nebula.server.lib.loader.ConflictRecord},{tk.freaxsoftware.nebula.server.lib.loader.storage.ConflictRecordHandler},conflicts.ecsv

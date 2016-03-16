@@ -29,9 +29,14 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tk.freaxsoftware.extras.faststorage.exception.EntityProcessingException;
+import tk.freaxsoftware.extras.faststorage.ignition.FastStorageIgnition;
+import tk.freaxsoftware.extras.faststorage.storage.Handlers;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPlugin;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPluginConflict;
 import tk.freaxsoftware.nebula.server.lib.api.Plugable;
+import tk.freaxsoftware.nebula.server.lib.loader.storage.ConflictRecordHandler;
+import tk.freaxsoftware.nebula.server.lib.loader.storage.PluginRecordHandler;
 
 /**
  * Nebula plugin loader entry class;
@@ -46,12 +51,12 @@ public class PluginLoader {
     /**
      * Records of plugins which were loaded into system.
      */
-    private List<PluginRecord> records;
+    private PluginRecordHandler pluginRecordHandler;
     
     /**
      * Records of conflicts between plugins.
      */
-    private List<ConflictRecord> conflicts;
+    private ConflictRecordHandler conflictRecordHandler;
     
     /**
      * Path of plugin directory on disk.
@@ -64,9 +69,14 @@ public class PluginLoader {
      */
     public PluginLoader(String givenPath) {
         path = givenPath;
-        
-        records = new ArrayList<>();
-        conflicts = new ArrayList<>();
+        try {
+            FastStorageIgnition.ignite(getClass().getClassLoader().getResource("Loader.ign").openStream());
+        } catch (EntityProcessingException | IOException ex) {
+            LOGGER.error("Unable to ignite plugin storages", ex);
+            throw new RuntimeException("Unable to proceed without configured plugins.");
+        }
+        pluginRecordHandler = (PluginRecordHandler) Handlers.getHandlerByClass(PluginRecord.class);
+        conflictRecordHandler = (ConflictRecordHandler) Handlers.getHandlerByClass(ConflictRecord.class);
     }
     
     /**
@@ -75,7 +85,7 @@ public class PluginLoader {
     public void loadCore() {
         synchronized (dataLock) {
             try {
-                records.add(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.core.sync.SyncPlugin")));
+                pluginRecordHandler.save(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.core.sync.SyncPlugin")));
                 LOGGER.info("Core sync plugin loaded.");
             } catch (ClassNotFoundException cex) {
                 LOGGER.error("unable to load core sync plugin!" , cex);
@@ -123,7 +133,7 @@ public class PluginLoader {
                         PluginRecord module = tryModuleClass(loadedClass);
                         if (module != null) {
                             LOGGER.info("Loaded module " + module.getId() + " - " + className);
-                            records.add(module);
+                            pluginRecordHandler.save(module);
                         }
                     } catch (ClassNotFoundException ex) {
                         LOGGER.error("Can't load class " + className, ex);
@@ -175,7 +185,7 @@ public class PluginLoader {
      */
     private void processModuleConflicts(String pluginId, NebulaPluginConflict conflict) {
         LOGGER.warn("add conflicvt record for plugin " + pluginId + " with conflict id " + conflict.conflictId());
-        conflicts.add(new ConflictRecord(pluginId, conflict));
+        conflictRecordHandler.save(new ConflictRecord(pluginId, conflict));
     }
     
     /**
@@ -183,7 +193,7 @@ public class PluginLoader {
      * @return list of records;
      */
     public List<PluginRecord> getRecords() {
-        return records;
+        return pluginRecordHandler.getAll();
     }
     
     /**
@@ -191,7 +201,7 @@ public class PluginLoader {
      * @return list of conflicts;
      */
     public List<ConflictRecord> getConflicts() {
-        return conflicts;
+        return conflictRecordHandler.getAll();
     }
     
     /**
@@ -200,7 +210,7 @@ public class PluginLoader {
      * @param pluginId plugin to install and run;
      */
     public void installAndStart(String pluginId) {
-        PluginRecord record = getRecordById(pluginId);
+        PluginRecord record = pluginRecordHandler.getRecordById(pluginId);
         if (record != null) {
             LOGGER.warn("Installing plugin with id " + pluginId);
             if (record.getStatus() != PluginStatus.INIT_ERROR) {
@@ -228,21 +238,5 @@ public class PluginLoader {
         } else {
             LOGGER.error("Can't install plugin with id " + pluginId + "; plugin doesn't exsist!");
         }
-    }
-    
-    /**
-     * Get plugin record with specified id.
-     * @param pluginId id to search;
-     * @return record or null if not found;
-     */
-    private PluginRecord getRecordById(String pluginId) {
-        synchronized (dataLock) {
-            for (PluginRecord record: records) {
-                if (record.getId().equals(pluginId)) {
-                    return record;
-                }
-            }
-        }
-        return null;
     }
 }
