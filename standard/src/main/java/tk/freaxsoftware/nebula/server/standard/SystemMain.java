@@ -29,6 +29,8 @@ import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
+import tk.freaxsoftware.extras.faststorage.exception.EntityProcessingException;
+import tk.freaxsoftware.extras.faststorage.ignition.FastStorageIgnition;
 import tk.freaxsoftware.nebula.server.lib.loader.PluginLoader;
 import tk.freaxsoftware.nebula.server.lib.localehandler.LocaleHandler;
 
@@ -56,6 +58,13 @@ public class SystemMain {
         Spark.threadPool(config.getSparkThreadPoolMax(), 
                 config.getSparkThreadPoolMin(), 30000);
         LocaleHandler.setDefaultLocale(config.getDefaultLocale());
+        
+        try {
+            FastStorageIgnition.ignite(SystemMain.class.getClassLoader().getResourceAsStream("Entities.ign"));
+        } catch (EntityProcessingException ex) {
+            LOGGER.error("Error during loading of users or groups", ex);
+            throw new RuntimeException("Unable to proceed");
+        }
 
         File pluginFolder = new File("plugins/");
         loader = new PluginLoader(pluginFolder.getAbsolutePath());

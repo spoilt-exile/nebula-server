@@ -1,0 +1,2 @@
+USER,{tk.freaxsoftware.nebula.server.standard.entities.User},{tk.freaxsoftware.nebula.server.standard.entities.handlers.UserHandler},users.ecsv
+GROUP,{tk.freaxsoftware.nebula.server.standard.entities.Group},{tk.freaxsoftware.nebula.server.standard.entities.handlers.GroupHandler},group.ecsv
