@@ -51,5 +51,11 @@ public class GroupHandler extends AbstractEntityHandler<Group, String> {
     public String getType() {
         return Group.TYPE;
     }
+
+    @Override
+    public void onStorageCreation() {
+        appendEntityToStore(new Group("Admin", "Admin default group. Please don't remove it!", null, new String[] {"root"}, null));
+        appendEntityToStore(new Group("Users", "Test user group", null, new String[] {"user"}, null));
+    }
     
 }

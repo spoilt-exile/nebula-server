@@ -61,5 +61,10 @@ public class ConflictRecordHandler extends AbstractEntityHandler<ConflictRecord,
     public String getType() {
         return ConflictRecord.TYPE;
     }
+
+    @Override
+    public void onStorageCreation() {
+        //Do nothing
+    }
     
 }

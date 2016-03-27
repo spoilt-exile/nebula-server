@@ -18,6 +18,7 @@
  */
 package tk.freaxsoftware.nebula.server.standard.entities;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -38,7 +39,7 @@ public class User implements ECSVAble<String> {
     
     public static final ECSVDefinition DEFINITION = ECSVDefinition.createNew()
             .addKey(String.class)
-            .addPrimitive(ECSVFields.PR_WORD)
+            .addPrimitive(ECSVFields.PR_STRING)
             .addPrimitive(ECSVFields.PR_STRING)
             .addPrimitive(ECSVFields.PR_STRING)
             .addPrimitive(ECSVFields.PR_STRING)
@@ -69,6 +70,11 @@ public class User implements ECSVAble<String> {
     private String imageUrl;
     
     /**
+     * User mail address.
+     */
+    private String email;
+    
+    /**
      * Hashed password.
      */
     private String password;
@@ -92,6 +98,22 @@ public class User implements ECSVAble<String> {
      * Maps of additional attributes.
      */
     private Map<String, String> attrs;
+
+    public User() {
+    }
+
+    public User(String login, String username, String description, String imageUrl, String email, String password, Boolean active, Date expireDate, String[] groupKeys, Map<String, String> attrs) {
+        this.login = login;
+        this.username = username;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.email = email;
+        this.password = password;
+        this.active = active;
+        this.expireDate = expireDate;
+        this.groups = new EntityListReference<>(Arrays.asList(groupKeys), Group.class, false);
+        this.attrs = attrs;
+    }
 
     public String getLogin() {
         return login;
@@ -123,6 +145,14 @@ public class User implements ECSVAble<String> {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -193,6 +223,9 @@ public class User implements ECSVAble<String> {
         if (!Objects.equals(this.imageUrl, other.imageUrl)) {
             return false;
         }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
         if (!Objects.equals(this.password, other.password)) {
             return false;
         }
@@ -210,7 +243,7 @@ public class User implements ECSVAble<String> {
 
     @Override
     public String toString() {
-        return "User{" + "login=" + login + ", username=" + username + ", description=" + description + ", imageUrl=" + imageUrl + ", password=" + password + ", active=" + active + ", expireDate=" + expireDate + ", attrs=" + attrs + '}';
+        return "User{" + "login=" + login + ", username=" + username + ", description=" + description + ", imageUrl=" + imageUrl + ", email=" + email + ", password=" + password + ", active=" + active + ", expireDate=" + expireDate + ", attrs=" + attrs + '}';
     }
 
     @Override
@@ -239,6 +272,7 @@ public class User implements ECSVAble<String> {
         this.username = reader.readString();
         this.description = reader.readString();
         this.imageUrl = reader.readString();
+        this.email = reader.readString();
         this.password = reader.readWord();
         this.active = reader.readBoolean();
         this.expireDate = reader.readDate();
@@ -252,6 +286,7 @@ public class User implements ECSVAble<String> {
         writer.writeString(username);
         writer.writeString(description);
         writer.writeString(imageUrl);
+        writer.writeString(email);
         writer.writeWord(password);
         writer.writeBoolean(active);
         writer.writeDate(expireDate);
@@ -267,6 +302,7 @@ public class User implements ECSVAble<String> {
             this.username = other.username;
             this.description = other.description;
             this.imageUrl = other.imageUrl;
+            this.email = other.email;
             this.password = other.password;
             this.active = other.active;
             this.expireDate = other.expireDate;

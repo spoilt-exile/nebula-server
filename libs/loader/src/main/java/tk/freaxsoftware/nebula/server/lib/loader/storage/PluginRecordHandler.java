@@ -76,4 +76,9 @@ public class PluginRecordHandler extends AbstractEntityHandler<PluginRecord, Str
         }
         return null;
     }
+
+    @Override
+    public void onStorageCreation() {
+        //Do nothing
+    }
 }

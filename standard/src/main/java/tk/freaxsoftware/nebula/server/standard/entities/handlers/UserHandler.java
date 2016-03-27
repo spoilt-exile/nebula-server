@@ -21,6 +21,7 @@ package tk.freaxsoftware.nebula.server.standard.entities.handlers;
 import java.util.List;
 import tk.freaxsoftware.extras.faststorage.storage.AbstractEntityHandler;
 import tk.freaxsoftware.nebula.server.standard.entities.User;
+import tk.freaxsoftware.nebula.server.standard.utils.SHAHash;
 
 /**
  * User entity handler.
@@ -50,6 +51,12 @@ public class UserHandler extends AbstractEntityHandler<User, String> {
     @Override
     public String getType() {
         return User.TYPE;
+    }
+
+    @Override
+    public void onStorageCreation() {
+        appendEntityToStore(new User("root", "Root", "Superadmin account", null, "root@localhost", SHAHash.hashPassword("root"), true, null, new String[] {"Admin"}, null));
+        appendEntityToStore(new User("user", "User", "User test account", null, "user@localhost", SHAHash.hashPassword("user"), true, null, new String[] {"Users"}, null));
     }
     
 }

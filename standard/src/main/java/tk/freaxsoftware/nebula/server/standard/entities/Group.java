@@ -18,6 +18,7 @@
  */
 package tk.freaxsoftware.nebula.server.standard.entities;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import tk.freaxsoftware.extras.faststorage.generic.ECSVAble;
@@ -66,6 +67,16 @@ public class Group implements ECSVAble<String> {
      * Attribute map.
      */
     private Map<String, String> attrs;
+    
+    public Group() {}
+
+    public Group(String name, String description, String imageUrl, String[] userKeys, Map<String, String> attrs) {
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.users = new EntityListReference<>(Arrays.asList(userKeys), User.class, false);
+        this.attrs = attrs;
+    }
 
     public String getName() {
         return name;
