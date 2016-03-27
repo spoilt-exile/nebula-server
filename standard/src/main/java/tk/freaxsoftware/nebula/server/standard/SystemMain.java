@@ -21,18 +21,16 @@ package tk.freaxsoftware.nebula.server.standard;
 import freemarker.template.Configuration;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.ModelAndView;
-import spark.QueryParamsMap;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 import tk.freaxsoftware.extras.faststorage.exception.EntityProcessingException;
 import tk.freaxsoftware.extras.faststorage.ignition.FastStorageIgnition;
 import tk.freaxsoftware.nebula.server.lib.loader.PluginLoader;
 import tk.freaxsoftware.nebula.server.lib.localehandler.LocaleHandler;
+import tk.freaxsoftware.nebula.server.standard.routes.LoginRoutes;
+import tk.freaxsoftware.nebula.server.standard.routes.MainRoutes;
 
 /**
  * Nebula server main class.
@@ -42,9 +40,11 @@ public class SystemMain {
     
     private final static Logger LOGGER = LoggerFactory.getLogger(SystemMain.class);
     
-    private static ServerConfig config;
+    public static ServerConfig config;
     
-    private static PluginLoader loader;
+    public static PluginLoader loader;
+    
+    public static FreeMarkerEngine webTemplateEngine;
 
     /**
      * @param args the command line arguments
@@ -79,26 +79,14 @@ public class SystemMain {
         initLocalization();
         Spark.externalStaticFileLocation("web");
         
-        FreeMarkerEngine freeExternalEngine = new FreeMarkerEngine();
+        webTemplateEngine = new FreeMarkerEngine();
         Configuration freeExternalConfig = new Configuration();
         freeExternalConfig.setDirectoryForTemplateLoading(new File("web"));
-        freeExternalEngine.setConfiguration(freeExternalConfig);
+        webTemplateEngine.setConfiguration(freeExternalConfig);
         
-        Spark.get("/", (req, res) -> {
-            LocaleHandler.Accesser lc = LocaleHandler
-                    .getAccessByHeader(req.headers("Accept-Language"));
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("lc", lc);
-            attributes.put("records", loader.getRecords());
-            return new ModelAndView(attributes, "plugin.html");
-        }, freeExternalEngine);
-        
-        Spark.post("/install", (req, res) -> {
-            QueryParamsMap map = req.queryMap();
-            loader.installAndStart(map.value("recordId"));
-            res.redirect("/");
-            return null;
-        });
+        //Init routes
+        LoginRoutes.init();
+        MainRoutes.init();
     }
     
     /**
