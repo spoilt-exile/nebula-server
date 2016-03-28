@@ -59,4 +59,20 @@ public class UserHandler extends AbstractEntityHandler<User, String> {
         appendEntityToStore(new User("user", "User", "User test account", null, "user@localhost", SHAHash.hashPassword("user"), true, null, new String[] {"Users"}, null));
     }
     
+    /**
+     * Gets user instance by login.
+     * @param login
+     * @return 
+     */
+    public User getUserByLogin(String login) {
+        synchronized(entitiesLock) {
+            for (User entity: entitiesStore) {
+                if (entity.getLogin().equals(login)) {
+                    return entity;
+                }
+            }
+        }
+        return null;
+    }
+    
 }
