@@ -26,6 +26,7 @@ import static spark.Spark.*;
 import tk.freaxsoftware.nebula.server.lib.localehandler.LocaleHandler;
 import tk.freaxsoftware.nebula.server.standard.SystemMain;
 import static tk.freaxsoftware.nebula.server.standard.SystemMain.webTemplateEngine;
+import tk.freaxsoftware.nebula.server.standard.utils.UserHolder;
 
 /**
  * Routes for main page.
@@ -40,6 +41,7 @@ public class MainRoutes {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("lc", lc);
             attributes.put("records", SystemMain.loader.getRecords());
+            attributes.put("user", UserHolder.getUser());
             return new ModelAndView(attributes, "plugin.html");
         }, webTemplateEngine);
         

@@ -29,6 +29,7 @@ import static tk.freaxsoftware.nebula.server.standard.SystemMain.webTemplateEngi
 import tk.freaxsoftware.nebula.server.standard.entities.User;
 import tk.freaxsoftware.nebula.server.standard.entities.handlers.UserHandler;
 import tk.freaxsoftware.nebula.server.standard.utils.SHAHash;
+import tk.freaxsoftware.nebula.server.standard.utils.UserHolder;
 
 /**
  * Routes and filter for login operation.
@@ -44,6 +45,15 @@ public class LoginRoutes {
                     && !request.pathInfo().startsWith("/js")
                     && !request.pathInfo().startsWith("/less")) {
                 response.redirect("/login");
+            } else if (request.session().attribute("user") != null) {
+                UserHandler userHandler = (UserHandler) Handlers.getHandlerByClass(User.class);
+                User loginedUser = userHandler.getUserByLogin(request.session().attribute("user"));
+                if (loginedUser == null) {
+                    request.session().removeAttribute("user");
+                    response.redirect("/login");
+                } else {
+                    UserHolder.setUser(loginedUser);
+                }
             }
         });
         

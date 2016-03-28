@@ -33,5 +33,8 @@
             </#list>
         </tbody>
     </table>
+    <#if user??>
+        <h3>Hi, ${user.login}!</h3>
+    </#if>
   </body>
 </html>
