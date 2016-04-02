@@ -87,6 +87,9 @@ public class SystemMain {
         //Init routes
         LoginRoutes.init();
         MainRoutes.init();
+        
+        //Plugin intt
+        loader.startPlugins();
     }
     
     /**

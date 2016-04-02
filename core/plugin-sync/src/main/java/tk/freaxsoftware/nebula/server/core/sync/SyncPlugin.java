@@ -19,6 +19,8 @@
 
 package tk.freaxsoftware.nebula.server.core.sync;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPlugin;
 import tk.freaxsoftware.nebula.server.lib.api.Plugable;
 import tk.freaxsoftware.nebula.server.lib.api.PluginTypes;
@@ -39,30 +41,32 @@ import tk.freaxsoftware.nebula.server.lib.api.PluginTypes;
         initLocalization = true
 )
 public class SyncPlugin implements Plugable {
+    
+    private final static Logger LOGGER = LoggerFactory.getLogger(SyncPlugin.class);
 
     @Override
     public void install() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public void start() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LOGGER.info("Starting Sync plugin");
     }
 
     @Override
     public void stop() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public void uninstall() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public void purge() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
     
 }

@@ -46,8 +46,6 @@ public class PluginLoader {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginLoader.class);
     
-    private static final Object dataLock = new Object();
-    
     /**
      * Records of plugins which were loaded into system.
      */
@@ -83,12 +81,24 @@ public class PluginLoader {
      * Load core plugins of the Nebula system.
      */
     public void loadCore() {
-        synchronized (dataLock) {
+        try {
+            pluginRecordHandler.save(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.core.sync.SyncPlugin")));
+            LOGGER.info("Core sync plugin loaded.");
+        } catch (ClassNotFoundException cex) {
+            LOGGER.error("unable to load core sync plugin!" , cex);
+        }
+    }
+    
+    public void startPlugins() {
+        List<PluginRecord> records = pluginRecordHandler.getByStatus(PluginStatus.STARTED);
+        for (PluginRecord record: records) {
+            LOGGER.info("Starting plugin " + record.getId());
             try {
-                pluginRecordHandler.save(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.core.sync.SyncPlugin")));
-                LOGGER.info("Core sync plugin loaded.");
-            } catch (ClassNotFoundException cex) {
-                LOGGER.error("unable to load core sync plugin!" , cex);
+                record.getInstance().start();
+            } catch (Exception ex) {
+                LOGGER.error("failed to start plugin " + record.getId(), ex);
+                record.setStatus(PluginStatus.START_ERROR);
+                pluginRecordHandler.save(record);
             }
         }
     }
@@ -97,12 +107,10 @@ public class PluginLoader {
      * Loads plugins from plugin directory, fill records and conflicts lists.
      */
     public void load() {
-        synchronized (dataLock) {
-            File[] modulesRaw = new File(path).listFiles();
-            if (modulesRaw != null) {
-                for (File moduleFile : modulesRaw) {
-                    processModule(moduleFile.getName(), path);
-                }
+        File[] modulesRaw = new File(path).listFiles();
+        if (modulesRaw != null) {
+            for (File moduleFile : modulesRaw) {
+                processModule(moduleFile.getName(), path);
             }
         }
     }

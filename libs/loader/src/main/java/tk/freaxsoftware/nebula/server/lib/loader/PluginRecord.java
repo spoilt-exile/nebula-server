@@ -347,7 +347,7 @@ public class PluginRecord implements ECSVAble<String> {
             this.setVersionName(updatedRecord.getVersionName());
             this.setInitLocalization(updatedRecord.isInitLocalization());
             this.setClassEntryName(updatedRecord.getClassEntryName());
-            this.setStatus(updatedRecord.getStatus());
+            this.setStatus(this.getStatus() != PluginStatus.PRESENT && updatedRecord.getStatus() == PluginStatus.PRESENT ? this.getStatus() : updatedRecord.getStatus());
             this.setInstance(updatedRecord.getInstance());
         }
     }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tk.freaxsoftware.extras.faststorage.storage.AbstractEntityHandler;
 import tk.freaxsoftware.nebula.server.lib.loader.PluginRecord;
+import tk.freaxsoftware.nebula.server.lib.loader.PluginStatus;
 
 /**
  * Plugin record entity handler.
@@ -80,5 +81,22 @@ public class PluginRecordHandler extends AbstractEntityHandler<PluginRecord, Str
     @Override
     public void onStorageCreation() {
         //Do nothing
+    }
+    
+    /**
+     * Get plugin records list by status.
+     * @param status status to search;
+     * @return list of records with specified status;
+     */
+    public List<PluginRecord> getByStatus(PluginStatus status) {
+        List<PluginRecord> result = new ArrayList<>();
+        synchronized(this.entitiesLock) {
+            for (PluginRecord record: entitiesStore) {
+                if (record.getStatus() == status) {
+                    result.add(record);
+                }
+            }
+        }
+        return result;
     }
 }
