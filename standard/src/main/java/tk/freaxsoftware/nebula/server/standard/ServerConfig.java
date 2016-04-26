@@ -75,7 +75,17 @@ public class ServerConfig {
         /**
          * Default language locale for web ui.
          */
-        NEBULA_UI_DEFAULT_LOCALE("nebula_ui_default_locale", "en");
+        NEBULA_UI_DEFAULT_LOCALE("nebula_ui_default_locale", "en"),
+        
+        /**
+         * Secret for JWT token.
+         */
+        NEBULA_TOKEN_SECRET("nebula_token_secret", "secret"),
+        
+        /**
+         * JWT token max age in hours.
+         */
+        NEBULA_TOKEN_VALID_HOURS("nebula_token_valid_hours", 24 * 30);
         
         /**
          * Option property key.
@@ -138,6 +148,8 @@ public class ServerConfig {
         LOGGER.info("Spark min threads: " + getSparkThreadPoolMin());
         LOGGER.info("Plugins enabled: " + isPluginsEnabled());
         LOGGER.info("Default locale: " + getDefaultLocale());
+        LOGGER.info("Auth token secret:" + getTokenSecret());
+        LOGGER.info("Auth token max age:" + getTokenValidHours());
         LOGGER.info("===========================================================");
     }
     
@@ -199,5 +211,25 @@ public class ServerConfig {
         return optionsProperties.containsKey(Options.NEBULA_UI_DEFAULT_LOCALE.propertyKey)
                 ? optionsProperties.getProperty(Options.NEBULA_UI_DEFAULT_LOCALE.propertyKey)
                 : Options.NEBULA_UI_DEFAULT_LOCALE.defaultValue.toString();
+    }
+    
+    /**
+     * Get JWT token secret.
+     * @return jwt secret string;
+     */
+    public String getTokenSecret() {
+        return optionsProperties.containsKey(Options.NEBULA_TOKEN_SECRET.propertyKey)
+                ? optionsProperties.getProperty(Options.NEBULA_TOKEN_SECRET.propertyKey)
+                : Options.NEBULA_TOKEN_SECRET.defaultValue.toString();
+    }
+    
+    /**
+     * Get JWT token max age in hours.
+     * @return amount of hours (integer);
+     */
+    public Integer getTokenValidHours() {
+        return optionsProperties.containsKey(Options.NEBULA_TOKEN_VALID_HOURS.propertyKey) 
+                ? Integer.valueOf(optionsProperties.getProperty(Options.NEBULA_TOKEN_VALID_HOURS.propertyKey))
+                : Integer.valueOf(Options.NEBULA_TOKEN_VALID_HOURS.defaultValue.toString());
     }
 }
