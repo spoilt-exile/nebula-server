@@ -18,16 +18,21 @@
  */
 package tk.freaxsoftware.nebula.server.standard.routes;
 
+import io.jsonwebtoken.Claims;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import static spark.Spark.*;
 import tk.freaxsoftware.extras.faststorage.storage.Handlers;
 import tk.freaxsoftware.nebula.server.lib.localehandler.LocaleHandler;
+import tk.freaxsoftware.nebula.server.standard.SystemMain;
 import static tk.freaxsoftware.nebula.server.standard.SystemMain.webTemplateEngine;
 import tk.freaxsoftware.nebula.server.standard.entities.User;
 import tk.freaxsoftware.nebula.server.standard.entities.handlers.UserHandler;
+import tk.freaxsoftware.nebula.server.standard.utils.JWTTokenService;
 import tk.freaxsoftware.nebula.server.standard.utils.SHAHash;
 import tk.freaxsoftware.nebula.server.standard.utils.UserHolder;
 
@@ -37,23 +42,36 @@ import tk.freaxsoftware.nebula.server.standard.utils.UserHolder;
  */
 public class LoginRoutes {
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginRoutes.class);
+    
+    private static final UserHandler userHandler = (UserHandler) Handlers.getHandlerByClass(User.class);
+    
     public static void init() {
         before("/*", (request, response) -> {
-            if (request.session().attribute("user") == null && !request.pathInfo().equals("/login")
-                    && !request.pathInfo().startsWith("/bower_components")
-                    && !request.pathInfo().startsWith("/dist")
-                    && !request.pathInfo().startsWith("/js")
-                    && !request.pathInfo().startsWith("/less")) {
-                response.redirect("/login");
-            } else if (request.session().attribute("user") != null) {
-                UserHandler userHandler = (UserHandler) Handlers.getHandlerByClass(User.class);
-                User loginedUser = userHandler.getUserByLogin(request.session().attribute("user"));
-                if (loginedUser == null) {
+            User loginedUser = null;
+            if (request.session().attribute("user") != null) {
+                loginedUser = userHandler.getUserByLogin(request.session().attribute("user"));
+            } else if (request.cookies().containsKey(SystemMain.config.getTokenCookieName())) {
+                try {
+                    Claims userClaims = JWTTokenService.getInstance().decryptToken(request.cookie(SystemMain.config.getTokenCookieName()));
+                    loginedUser = userHandler.getUserByLogin(userClaims.getId());
+                } catch (Exception ex) {
+                    LOGGER.error("Unable to finish JWT auth", ex);
+                }
+            }
+            if (loginedUser == null) {
+                if (request.pathInfo().equals("/login")
+                    || request.pathInfo().startsWith("/bower_components")
+                    || request.pathInfo().startsWith("/dist")
+                    || request.pathInfo().startsWith("/js")
+                    || request.pathInfo().startsWith("/less")) {
+                    return;
+                } else {
                     request.session().removeAttribute("user");
                     response.redirect("/login");
-                } else {
-                    UserHolder.setUser(loginedUser);
                 }
+            } else {
+                UserHolder.setUser(loginedUser);
             }
         });
         
@@ -71,11 +89,17 @@ public class LoginRoutes {
         
         post("/login", (request, response) -> {
             QueryParamsMap map = request.queryMap();
-            UserHandler userHandler = (UserHandler) Handlers.getHandlerByClass(User.class);
             User user = userHandler.getUserByLogin(map.value("login"));
             if (user != null && user.getPassword().equals(SHAHash.hashPassword(map.value("password")))) {
-                request.session(true);
-                request.session().attribute("user", user.getLogin());
+                if (map.get("remember").value() != null && map.get("remember").value().equals("rememberTrue")) {
+                    LOGGER.debug("Proceed JWT auth: " + user.getLogin());
+                    JWTTokenService tokenService = JWTTokenService.getInstance();
+                    response.cookie(SystemMain.config.getTokenCookieName(), tokenService.encryptToken(user), SystemMain.config.getTokenValidHours() * 3600);
+                } else {
+                    LOGGER.debug("Proceed session auth: " + user.getLogin());
+                    request.session(true);
+                    request.session().attribute("user", user.getLogin());
+                }
                 response.redirect("/");
             } else {
                 request.session(true);

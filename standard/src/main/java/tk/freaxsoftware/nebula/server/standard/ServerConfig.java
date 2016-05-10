@@ -78,6 +78,11 @@ public class ServerConfig {
         NEBULA_UI_DEFAULT_LOCALE("nebula_ui_default_locale", "en"),
         
         /**
+         * Auth cookie name.
+         */
+        NEBULA_TOKEN_COOKIE_NAME("nebula_token_cookie_name", "nebula_system"),
+        
+        /**
          * Secret for JWT token.
          */
         NEBULA_TOKEN_SECRET("nebula_token_secret", "secret"),
@@ -148,6 +153,7 @@ public class ServerConfig {
         LOGGER.info("Spark min threads: " + getSparkThreadPoolMin());
         LOGGER.info("Plugins enabled: " + isPluginsEnabled());
         LOGGER.info("Default locale: " + getDefaultLocale());
+        LOGGER.info("Auth cookie name:" + getTokenCookieName());
         LOGGER.info("Auth token secret:" + getTokenSecret());
         LOGGER.info("Auth token max age:" + getTokenValidHours());
         LOGGER.info("===========================================================");
@@ -211,6 +217,17 @@ public class ServerConfig {
         return optionsProperties.containsKey(Options.NEBULA_UI_DEFAULT_LOCALE.propertyKey)
                 ? optionsProperties.getProperty(Options.NEBULA_UI_DEFAULT_LOCALE.propertyKey)
                 : Options.NEBULA_UI_DEFAULT_LOCALE.defaultValue.toString();
+    }
+    
+    /**
+     * Get JWT token secret.
+     * @return jwt secret string;
+     */
+    public String getTokenCookieName() {
+        return optionsProperties.containsKey(Options.NEBULA_TOKEN_COOKIE_NAME.propertyKey)
+                ? optionsProperties.getProperty(Options.NEBULA_TOKEN_COOKIE_NAME.propertyKey)
+                : Options.NEBULA_TOKEN_COOKIE_NAME.defaultValue.toString();
+
     }
     
     /**
