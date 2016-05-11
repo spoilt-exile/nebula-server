@@ -4,7 +4,7 @@ NEBULA_PID_FILE='nebula.pid'
 NEBULA_LOG_FILE='nebula.log'
 
 start_application() {
-  nohup java -jar nebula-server_static.jar &> $NEBULA_LOG_FILE 2>&1 & echo $! > $NEBULA_PID_FILE &
+  BUILD_ID=dontKillMe nohup java -jar nebula-server_static.jar &> $NEBULA_LOG_FILE 2>&1 & echo $! > $NEBULA_PID_FILE
 }
 
 kill_application() {
