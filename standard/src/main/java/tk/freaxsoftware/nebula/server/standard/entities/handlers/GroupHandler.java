@@ -54,8 +54,8 @@ public class GroupHandler extends AbstractEntityHandler<Group, String> {
 
     @Override
     public void onStorageCreation() {
-        appendEntityToStore(new Group("Admin", "Admin default group. Please don't remove it!", null, new String[] {"root"}, null));
-        appendEntityToStore(new Group("Users", "Test user group", null, new String[] {"user"}, null));
+        create(new Group("Admin", "Admin default group. Please don't remove it!", null, new String[] {"root"}, null));
+        create(new Group("Users", "Test user group", null, new String[] {"user"}, null));
     }
     
 }

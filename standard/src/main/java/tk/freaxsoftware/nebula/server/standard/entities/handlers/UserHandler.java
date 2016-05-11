@@ -55,8 +55,8 @@ public class UserHandler extends AbstractEntityHandler<User, String> {
 
     @Override
     public void onStorageCreation() {
-        appendEntityToStore(new User("root", "Root", "Superadmin account", null, "root@localhost", SHAHash.hashPassword("root"), true, null, new String[] {"Admin"}, null));
-        appendEntityToStore(new User("user", "User", "User test account", null, "user@localhost", SHAHash.hashPassword("user"), true, null, new String[] {"Users"}, null));
+        create(new User("root", "Root", "Superadmin account", null, "root@localhost", SHAHash.hashPassword("root"), true, null, new String[] {"Admin"}, null));
+        create(new User("user", "User", "User test account", null, "user@localhost", SHAHash.hashPassword("user"), true, null, new String[] {"Users"}, null));
     }
     
     /**
