@@ -28,7 +28,7 @@ import java.util.Date;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import tk.freaxsoftware.nebula.server.standard.SystemMain;
-import tk.freaxsoftware.nebula.server.standard.entities.User;
+import tk.freaxsoftware.nebula.server.core.entities.User;
 
 /**
  * JWT tocken service for encryption/decryption of tokens. Singletone.

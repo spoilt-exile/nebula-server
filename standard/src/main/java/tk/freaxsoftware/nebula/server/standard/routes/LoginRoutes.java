@@ -30,10 +30,10 @@ import tk.freaxsoftware.extras.faststorage.storage.Handlers;
 import tk.freaxsoftware.nebula.server.lib.localehandler.LocaleHandler;
 import tk.freaxsoftware.nebula.server.standard.SystemMain;
 import static tk.freaxsoftware.nebula.server.standard.SystemMain.webTemplateEngine;
-import tk.freaxsoftware.nebula.server.standard.entities.User;
-import tk.freaxsoftware.nebula.server.standard.entities.handlers.UserHandler;
+import tk.freaxsoftware.nebula.server.core.entities.User;
+import tk.freaxsoftware.nebula.server.core.entities.handlers.UserHandler;
 import tk.freaxsoftware.nebula.server.standard.utils.JWTTokenService;
-import tk.freaxsoftware.nebula.server.standard.utils.SHAHash;
+import tk.freaxsoftware.nebula.server.core.utils.SHAHash;
 import tk.freaxsoftware.nebula.server.standard.utils.UserHolder;
 
 /**

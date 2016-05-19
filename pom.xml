@@ -22,8 +22,8 @@ This package contains server implementation.</description>
         </developer>
     </developers>
     <modules>
-        <module>core</module>
         <module>libs</module>
         <module>standard</module>
+        <module>core-plugins</module>
     </modules>
 </project>

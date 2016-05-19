@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>tk.freaxsoftware.nebula.server</groupId>
-        <artifactId>core</artifactId>
+        <artifactId>core-plugins</artifactId>
         <version>0.1</version>
     </parent>
     <groupId>tk.freaxsoftware.nebula.server.core</groupId>

@@ -1,5 +1,5 @@
 /*
- * This file is part of Nebula Server application.
+ * This file is part of Nebula Core library.
  * 
  * Copyright (C) 2015 Freax Software
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
-package tk.freaxsoftware.nebula.server.standard.entities;
+package tk.freaxsoftware.nebula.server.core.entities;
 
 import java.util.Arrays;
 import java.util.Map;

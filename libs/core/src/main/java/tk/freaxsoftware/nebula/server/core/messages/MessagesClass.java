@@ -1,5 +1,5 @@
 /*
- * This file is part of Nebula Server application.
+ * This file is part of Nebula Core library.
  * 
  * Copyright (C) 2015 Freax Software
  *
@@ -16,24 +16,19 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
-package tk.freaxsoftware.nebula.server.standard.utils;
-
-import tk.freaxsoftware.nebula.server.core.entities.User;
+package tk.freaxsoftware.nebula.server.core.messages;
 
 /**
- * User security role holder.
+ * System wide messages id class.
  * @author Stanislav Nepochatov
  */
-public final class UserHolder {
+public class MessagesClass {
     
-    private static ThreadLocal<User> user = new ThreadLocal<User>();
-
-    public static User getUser() {
-        return user.get();
-    }
-
-    public static void setUser(User user) {
-        UserHolder.user.set(user);
-    }
+    /**
+     * Login message to the auth handling plugin. Arguments contains {@code login} and {@code pass}. 
+     * Auth handler must return saved user instance as {@code user} and able to override token expire time 
+     * with {@expireTime} as long.
+     */
+    public static final String NEBULA_INTERNAL_LOGIN_MESSAGE = "Nebula.Internal.Login";
     
 }

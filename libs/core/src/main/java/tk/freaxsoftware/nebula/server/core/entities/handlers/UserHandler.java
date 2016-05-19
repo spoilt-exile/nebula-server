@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
-package tk.freaxsoftware.nebula.server.standard.entities.handlers;
+package tk.freaxsoftware.nebula.server.core.entities.handlers;
 
 import java.util.List;
 import tk.freaxsoftware.extras.faststorage.storage.AbstractEntityHandler;
-import tk.freaxsoftware.nebula.server.standard.entities.User;
-import tk.freaxsoftware.nebula.server.standard.utils.SHAHash;
+import tk.freaxsoftware.nebula.server.core.entities.User;
+import tk.freaxsoftware.nebula.server.core.utils.SHAHash;
 
 /**
  * User entity handler.

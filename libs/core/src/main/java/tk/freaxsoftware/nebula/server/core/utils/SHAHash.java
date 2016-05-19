@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
-package tk.freaxsoftware.nebula.server.standard.utils;
+package tk.freaxsoftware.nebula.server.core.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

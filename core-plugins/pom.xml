@@ -7,12 +7,12 @@
         <version>0.1</version>
     </parent>
     <groupId>tk.freaxsoftware.nebula.server</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>core-plugins</artifactId>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <name>Nebula System :: Core plugins :: v.${project.version}</name>
+    <name>Nebula System :: Core plugins :: v.0.1</name>
     <description>Core plugins repository;</description>
     <developers>
         <developer>
