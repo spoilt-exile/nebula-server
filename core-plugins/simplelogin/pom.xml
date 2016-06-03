@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>tk.freaxsoftware.nebula.server</groupId>
+        <artifactId>core-plugins</artifactId>
+        <version>0.1</version>
+    </parent>
+    <groupId>tk.freaxsoftware.nebula.server.system</groupId>
+    <artifactId>simplelogin</artifactId>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <name>Nebula System :: System :: SimpleLogin :: v.${project.version}</name>
+    <description>Simple login plugin for basic auth;</description>
+    <version>0.1</version>
+    <developers>
+        <developer>
+            <id>spoilt</id>
+            <name>Stanislav Nepochatov</name>
+            <organization>Freax Software</organization>
+            <organizationUrl>freaxsoftware.tk</organizationUrl>
+            <email>spoilt@blackstarfilm.com</email>
+        </developer>
+    </developers>
+    
+    <dependencies>
+        <dependency>
+            <groupId>tk.freaxsoftware.nebula.server</groupId>
+            <artifactId>core</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>tk.freaxsoftware.nebula.server.lib</groupId>
+            <artifactId>api</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>tk.freaxsoftware.extras</groupId>
+            <artifactId>messagebus</artifactId>
+            <version>3.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+    </dependencies>
+</project>
