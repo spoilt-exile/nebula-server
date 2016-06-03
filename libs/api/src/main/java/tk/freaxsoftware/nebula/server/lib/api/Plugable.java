@@ -29,35 +29,40 @@ public interface Plugable {
      * performs data initialization on this stage. 
      * This method called once when user press <b>Activate</b> button in 
      * the list. Also will be triggered during upgrade.
+     * @throws java.lang.Exception
      */
-    void install();
+    void install() throws Exception;
     
     /**
      * Starts plugin internal background tasks if they were. 
      * Route registration and message receivers init should be done here.
      * This methods called every time on system launch, upgrade finish or 
      * on wake up from maintaince state.
+     * @throws java.lang.Exception
      */
-    void start();
+    void start() throws Exception;
     
     /**
      * Stops plugin internal tasks, remove listeners and reset routes.
      * This methods called on system shoutdown, upgrade init or on going to 
      * maintaince mode.
+     * @throws java.lang.Exception
      */
-    void stop();
+    void stop() throws Exception;
     
     /**
      * Uninstalls all internal resources in plugin related directory. 
      * This methods shouldn't affect storage data of plugin. Called when user 
      * press <b>Deactivate</b> button in the list.
+     * @throws java.lang.Exception
      */
-    void uninstall();
+    void uninstall() throws Exception;
     
     /**
      * Purges all stored data of plugin. Called during plugin removal from
      * the system.
+     * @throws java.lang.Exception
      */
-    void purge();
+    void purge() throws Exception;
     
 }
