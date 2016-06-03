@@ -45,27 +45,27 @@ public class SyncPlugin implements Plugable {
     private final static Logger LOGGER = LoggerFactory.getLogger(SyncPlugin.class);
 
     @Override
-    public void install() {
+    public void install() throws Exception {
 
     }
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         LOGGER.info("Starting Sync plugin");
     }
 
     @Override
-    public void stop() {
+    public void stop() throws Exception {
 
     }
 
     @Override
-    public void uninstall() {
+    public void uninstall() throws Exception {
 
     }
 
     @Override
-    public void purge() {
+    public void purge() throws Exception {
 
     }
     

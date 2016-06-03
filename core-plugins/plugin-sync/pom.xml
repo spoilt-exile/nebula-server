@@ -41,6 +41,12 @@
             <artifactId>spark-template-freemarker</artifactId>
             <version>2.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>tk.freaxsoftware.extras</groupId>
+            <artifactId>messagebus</artifactId>
+            <version>3.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <name>Nebula System :: Core :: Sync :: v.${project.version}</name>
     <description>Core data sychronization plugin.</description>
