@@ -6,6 +6,7 @@
         <artifactId>libs</artifactId>
         <version>0.1</version>
     </parent>
+    <groupId>tk.freaxsoftware.nebula.server</groupId>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
     <properties>

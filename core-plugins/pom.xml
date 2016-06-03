@@ -25,5 +25,6 @@
     </developers>
     <modules>
         <module>plugin-sync</module>
+        <module>simplelogin</module>
     </modules>
 </project>

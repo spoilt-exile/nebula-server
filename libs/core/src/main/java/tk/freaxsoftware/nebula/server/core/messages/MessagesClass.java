@@ -30,5 +30,7 @@ public class MessagesClass {
      * with {@expireTime} as long.
      */
     public static final String NEBULA_INTERNAL_LOGIN_MESSAGE = "Nebula.Internal.Login";
-    
+    public static final String NEBULA_INTERNAL_LOGIN_ARG_LOGIN = "Nebula.Internal.Login.Arg.Login";
+    public static final String NEBULA_INTERNAL_LOGIN_ARG_PASSWORD = "Nebula.Internal.Login.Arg.Password";
+    public static final String NEBULA_INTERNAL_LOGIN_RES_USER = "Nebula.Internal.Login.Res.User";
 }
