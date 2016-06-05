@@ -26,12 +26,16 @@ import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import static spark.Spark.*;
+import tk.freaxsoftware.extras.bus.ArgHelper;
+import tk.freaxsoftware.extras.bus.GlobalIds;
+import tk.freaxsoftware.extras.bus.MessageBus;
 import tk.freaxsoftware.extras.faststorage.storage.Handlers;
 import tk.freaxsoftware.nebula.server.lib.localehandler.LocaleHandler;
 import tk.freaxsoftware.nebula.server.standard.SystemMain;
 import static tk.freaxsoftware.nebula.server.standard.SystemMain.webTemplateEngine;
 import tk.freaxsoftware.nebula.server.core.entities.User;
 import tk.freaxsoftware.nebula.server.core.entities.handlers.UserHandler;
+import tk.freaxsoftware.nebula.server.core.messages.MessagesClass;
 import tk.freaxsoftware.nebula.server.standard.utils.JWTTokenService;
 import tk.freaxsoftware.nebula.server.core.utils.SHAHash;
 import tk.freaxsoftware.nebula.server.standard.utils.UserHolder;
@@ -89,23 +93,48 @@ public class LoginRoutes {
         
         post("/login", (request, response) -> {
             QueryParamsMap map = request.queryMap();
-            User user = userHandler.getUserByLogin(map.value("login"));
-            if (user != null && user.getPassword().equals(SHAHash.hashPassword(map.value("password")))) {
-                if (map.get("remember").value() != null && map.get("remember").value().equals("rememberTrue")) {
-                    LOGGER.debug("Proceed JWT auth: " + user.getLogin());
-                    JWTTokenService tokenService = JWTTokenService.getInstance();
-                    response.cookie(SystemMain.config.getTokenCookieName(), tokenService.encryptToken(user), SystemMain.config.getTokenValidHours() * 3600);
+            ArgHelper argHelper = ArgHelper.newInstance()
+                    .putArg(MessagesClass.NEBULA_INTERNAL_LOGIN_ARG_LOGIN, map.value("login"))
+                    .putArg(MessagesClass.NEBULA_INTERNAL_LOGIN_ARG_PASSWORD, map.value("password"));
+            
+            MessageBus.fireMessageSyncCheckedHelped(MessagesClass.NEBULA_INTERNAL_LOGIN_MESSAGE, argHelper, (res) -> {
+                if (MessageBus.isSuccessful(res)) {
+                    User user = (User) res.get(MessagesClass.NEBULA_INTERNAL_LOGIN_RES_USER);
+                    if (map.get("remember").value() != null && map.get("remember").value().equals("rememberTrue")) {
+                        LOGGER.debug("Proceed JWT auth: " + user.getLogin());
+                        JWTTokenService tokenService = JWTTokenService.getInstance();
+                        response.cookie(SystemMain.config.getTokenCookieName(), tokenService.encryptToken(user), SystemMain.config.getTokenValidHours() * 3600);
+                    } else {
+                        LOGGER.debug("Proceed session auth: " + user.getLogin());
+                        request.session(true);
+                        request.session().attribute("user", user.getLogin());
+                    }
+                    response.redirect("/");
                 } else {
-                    LOGGER.debug("Proceed session auth: " + user.getLogin());
+                    LOGGER.error("Handler returned error: " + res.get(GlobalIds.GLOBAL_ERROR_MESSAGE));
                     request.session(true);
-                    request.session().attribute("user", user.getLogin());
+                    request.session().attribute("error", "server_login_error_message");
+                    response.redirect("/login");
                 }
-                response.redirect("/");
-            } else {
-                request.session(true);
-                request.session().attribute("error", "server_login_error_message");
-                response.redirect("/login");
-            }
+            });
+            
+//            User user = userHandler.getUserByLogin(map.value("login"));
+//            if (user != null && user.getPassword().equals(SHAHash.hashPassword(map.value("password")))) {
+//                if (map.get("remember").value() != null && map.get("remember").value().equals("rememberTrue")) {
+//                    LOGGER.debug("Proceed JWT auth: " + user.getLogin());
+//                    JWTTokenService tokenService = JWTTokenService.getInstance();
+//                    response.cookie(SystemMain.config.getTokenCookieName(), tokenService.encryptToken(user), SystemMain.config.getTokenValidHours() * 3600);
+//                } else {
+//                    LOGGER.debug("Proceed session auth: " + user.getLogin());
+//                    request.session(true);
+//                    request.session().attribute("user", user.getLogin());
+//                }
+//                response.redirect("/");
+//            } else {
+//                request.session(true);
+//                request.session().attribute("error", "server_login_error_message");
+//                response.redirect("/login");
+//            }
             return null;
         });
     }

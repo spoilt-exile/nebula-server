@@ -70,6 +70,11 @@
             <artifactId>core</artifactId>
             <version>0.1</version>
         </dependency>
+        <dependency>
+            <groupId>tk.freaxsoftware.extras</groupId>
+            <artifactId>messagebus</artifactId>
+            <version>3.0</version>
+        </dependency>
         
         <!-- Nebula core plugins -->
         <dependency>
