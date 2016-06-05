@@ -18,15 +18,21 @@
  */
 package tk.freaxsoftware.nebula.server.lib.loader;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import tk.freaxsoftware.extras.faststorage.generic.ECSVAble;
 import tk.freaxsoftware.extras.faststorage.generic.ECSVDefinition;
 import tk.freaxsoftware.extras.faststorage.generic.ECSVFields;
 import tk.freaxsoftware.extras.faststorage.reading.EntityReader;
 import tk.freaxsoftware.extras.faststorage.writing.EntityWriter;
+import tk.freaxsoftware.nebula.server.lib.api.Features;
+import tk.freaxsoftware.nebula.server.lib.api.NebulaFeature;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPlugin;
 import tk.freaxsoftware.nebula.server.lib.api.Plugable;
 import tk.freaxsoftware.nebula.server.lib.api.PluginTypes;
+import tk.freaxsoftware.nebula.server.lib.loader.storage.converters.FeatureConverter;
 
 /**
  * System record of plugin which present in the system.
@@ -50,7 +56,8 @@ public class PluginRecord implements ECSVAble<String> {
             .addPrimitive(ECSVFields.PR_STRING)
             .addPrimitive(ECSVFields.PR_BOOLEAN)
             .addPrimitive(ECSVFields.PR_WORD)
-            .addPrimitive(ECSVFields.PR_WORD);
+            .addPrimitive(ECSVFields.PR_WORD)
+            .addMap(new FeatureConverter(), ECSVDefinition.CONVERTER_BOOLEAN);
     
     /**
      * Internal id of plugin in the system.
@@ -111,6 +118,11 @@ public class PluginRecord implements ECSVAble<String> {
     private PluginStatus status;
     
     /**
+     * Map of features.
+     */
+    private Map<Features, Boolean> features;
+    
+    /**
      * Initiated plugin instance.
      */
     private transient Plugable instance;
@@ -119,10 +131,11 @@ public class PluginRecord implements ECSVAble<String> {
 
     /**
      * Default constructor.
-     * @param pluginAnnotation annotation extracted from plugin class.
-     * @param instance plugin inited instance.
+     * @param pluginAnnotation annotation extracted from plugin class;
+     * @param features array of features annotations;
+     * @param instance plugin inited instance;
      */
-    public PluginRecord(NebulaPlugin pluginAnnotation, Plugable instance) {
+    public PluginRecord(NebulaPlugin pluginAnnotation, NebulaFeature[] features, Plugable instance) {
         this.id = pluginAnnotation.id();
         this.name = pluginAnnotation.name();
         this.type = pluginAnnotation.type();
@@ -138,6 +151,14 @@ public class PluginRecord implements ECSVAble<String> {
             this.status = PluginStatus.INIT_ERROR;
         } else {
             this.status = PluginStatus.PRESENT;
+        }
+        if (features != null && features.length > 0) {
+            this.features = new HashMap<>();
+            for (NebulaFeature feature: features) {
+                this.features.put(feature.feature(), feature.concurent());
+            }
+        } else {
+            this.features = Collections.EMPTY_MAP;
         }
     }
     
@@ -237,6 +258,14 @@ public class PluginRecord implements ECSVAble<String> {
         this.status = status;
     }
 
+    public Map<Features, Boolean> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(Map<Features, Boolean> features) {
+        this.features = features;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -280,6 +309,9 @@ public class PluginRecord implements ECSVAble<String> {
         if (this.status != other.status) {
             return false;
         }
+        if (!Objects.equals(this.features, other.features)) {
+            return false;
+        }
         return true;
     }
 
@@ -311,6 +343,7 @@ public class PluginRecord implements ECSVAble<String> {
         this.initLocalization = reader.readBoolean();
         this.classEntryName = reader.readWord();
         this.status = PluginStatus.valueOf(reader.readWord());
+        this.features = reader.readMap();
     }
 
     @Override
@@ -326,6 +359,7 @@ public class PluginRecord implements ECSVAble<String> {
         writer.writeBoolean(initLocalization);
         writer.writeWord(classEntryName);
         writer.writeWord(status.name());
+        writer.writeMap(features);
     }
 
     @Override
@@ -348,6 +382,7 @@ public class PluginRecord implements ECSVAble<String> {
             this.setInitLocalization(updatedRecord.isInitLocalization());
             this.setClassEntryName(updatedRecord.getClassEntryName());
             this.setStatus(this.getStatus() != PluginStatus.PRESENT && updatedRecord.getStatus() == PluginStatus.PRESENT ? this.getStatus() : updatedRecord.getStatus());
+            this.setFeatures(updatedRecord.getFeatures());
             this.setInstance(updatedRecord.getInstance());
         }
     }

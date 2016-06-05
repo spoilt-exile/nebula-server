@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import tk.freaxsoftware.extras.faststorage.exception.EntityProcessingException;
 import tk.freaxsoftware.extras.faststorage.ignition.FastStorageIgnition;
 import tk.freaxsoftware.extras.faststorage.storage.Handlers;
+import tk.freaxsoftware.nebula.server.lib.api.NebulaFeature;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPlugin;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPluginConflict;
 import tk.freaxsoftware.nebula.server.lib.api.Plugable;
@@ -82,6 +83,7 @@ public class PluginLoader {
      */
     public void loadCore() {
         try {
+            pluginRecordHandler.save(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.system.simplelogin.SimpleLoginPlugin")));
             pluginRecordHandler.save(tryModuleClass(Class.forName("tk.freaxsoftware.nebula.server.core.sync.SyncPlugin")));
             LOGGER.info("Core sync plugin loaded.");
         } catch (ClassNotFoundException cex) {
@@ -173,16 +175,17 @@ public class PluginLoader {
                         processModuleConflicts(plugAnnotation.id(), conflictEntry);
                     }
                 }
-                return new PluginRecord(plugAnnotation, pluginInstance);
+                NebulaFeature[] features = (NebulaFeature[]) givenClass.getAnnotationsByType(NebulaFeature.class);
+                return new PluginRecord(plugAnnotation, features, pluginInstance);
             } else {
                 return null;
             }
         } catch (IllegalAccessException ex) {
             LOGGER.error("Class " + givenClass.getName() + " doesn't have public empty constructor.", ex);
-            return plugAnnotation != null ? new PluginRecord(plugAnnotation, null) : null;
+            return plugAnnotation != null ? new PluginRecord(plugAnnotation, null, null) : null;
         } catch (InstantiationException ex) {
             LOGGER.error("Class " + givenClass.getName() + " can't be instanced as object.", ex);
-            return plugAnnotation != null ? new PluginRecord(plugAnnotation, null) : null;
+            return plugAnnotation != null ? new PluginRecord(plugAnnotation, null, null) : null;
         }
     }
     

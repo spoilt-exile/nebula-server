@@ -10,3 +10,6 @@
 /core/plugin-sync/target/
 /libs/core/target/
 /core-plugins/simplelogin/target/
+/standard/target/
+/libs/api/target/
+/core-plugins/plugin-sync/target/

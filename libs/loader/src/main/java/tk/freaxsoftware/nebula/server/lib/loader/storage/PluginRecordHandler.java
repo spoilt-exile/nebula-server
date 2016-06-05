@@ -21,6 +21,7 @@ package tk.freaxsoftware.nebula.server.lib.loader.storage;
 import java.util.ArrayList;
 import java.util.List;
 import tk.freaxsoftware.extras.faststorage.storage.AbstractEntityHandler;
+import tk.freaxsoftware.nebula.server.lib.api.Features;
 import tk.freaxsoftware.nebula.server.lib.loader.PluginRecord;
 import tk.freaxsoftware.nebula.server.lib.loader.PluginStatus;
 
@@ -76,6 +77,18 @@ public class PluginRecordHandler extends AbstractEntityHandler<PluginRecord, Str
             }
         }
         return null;
+    }
+    
+    public List<PluginRecord> getRecordsByFeature(Features feature) {
+        List<PluginRecord> result = new ArrayList<>();
+        synchronized (entitiesLock) {
+            for (PluginRecord record: entitiesStore) {
+                if (record.getFeatures().containsKey(feature)) {
+                    result.add(record);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
