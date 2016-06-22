@@ -75,6 +75,12 @@ public class SystemMain {
             LOGGER.info("loading extra plugins.");
             loader.load();
         }
+        Boolean reuslt = loader.startPluginsByFeatures(config.getRequiredFeatures());
+        if (reuslt) {
+            LOGGER.info("All required features started.");
+        } else {
+            LOGGER.warn("Not all features started. Please reconfigure system.");
+        }
         
         initLocalization();
         Spark.externalStaticFileLocation("web");
