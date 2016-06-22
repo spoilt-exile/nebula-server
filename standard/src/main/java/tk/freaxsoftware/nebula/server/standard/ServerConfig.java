@@ -23,9 +23,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tk.freaxsoftware.nebula.server.lib.api.Features;
 
 /**
  * Server configuration class.
@@ -73,6 +75,11 @@ public class ServerConfig {
         NEBULA_PLUGIN_LOADER_ENABLED("nebula_plugin_loader_enabled", true),
         
         /**
+         * Required features which will run automatically.
+         */
+        NEBULA_PLUGIN_REQUIRED_FEATURES("nebula_plugin_required_features", new Features[] {Features.LOGIN_PROVIDER}, "LOGIN_PROVIDER"),
+        
+        /**
          * Default language locale for web ui.
          */
         NEBULA_UI_DEFAULT_LOCALE("nebula_ui_default_locale", "en"),
@@ -103,6 +110,11 @@ public class ServerConfig {
         private final Object defaultValue;
         
         /**
+         * Default properties value.
+         */
+        private final String propertyStrValue;
+        
+        /**
          * Default constructor.
          * @param givenKey option key;
          * @param givenValue default value;
@@ -110,6 +122,13 @@ public class ServerConfig {
         Options(String givenKey, Object givenValue) {
             propertyKey = givenKey;
             defaultValue = givenValue;
+            propertyStrValue = null;
+        }
+
+        private Options(String givenKey, Object givenValue, String giveStrValue) {
+            this.propertyKey = givenKey;
+            this.defaultValue = givenValue;
+            this.propertyStrValue = giveStrValue;
         }
     }
     
@@ -124,7 +143,7 @@ public class ServerConfig {
             Properties newProperties = new Properties();
             for (Options option: Options.values()) {
                 newProperties.setProperty(option.propertyKey, 
-                        option.defaultValue.toString());
+                        option.propertyStrValue == null ? option.defaultValue.toString() : option.propertyStrValue);
             }
             try {
                 newProperties.store(new FileWriter(CONFIG_FILENAME), null);
@@ -152,6 +171,7 @@ public class ServerConfig {
         LOGGER.info("Spark max threads: " + getSparkThreadPoolMax());
         LOGGER.info("Spark min threads: " + getSparkThreadPoolMin());
         LOGGER.info("Plugins enabled: " + isPluginsEnabled());
+        LOGGER.info("Required features: " + Arrays.toString(getRequiredFeatures()));
         LOGGER.info("Default locale: " + getDefaultLocale());
         LOGGER.info("Auth cookie name:" + getTokenCookieName());
         LOGGER.info("Auth token secret:" + getTokenSecret());
@@ -207,6 +227,23 @@ public class ServerConfig {
         return optionsProperties.containsKey(Options.NEBULA_PLUGIN_LOADER_ENABLED.propertyKey)
                 ? Boolean.valueOf(optionsProperties.getProperty(Options.NEBULA_PLUGIN_LOADER_ENABLED.propertyKey))
                 : Boolean.valueOf(Options.NEBULA_PLUGIN_LOADER_ENABLED.defaultValue.toString());
+    }
+    
+    /**
+     * Get system required features.
+     * @return array of features;
+     */
+    public Features[] getRequiredFeatures() {
+        if (optionsProperties.containsKey(Options.NEBULA_PLUGIN_REQUIRED_FEATURES.propertyKey)) {
+            String[] rawFeatures = optionsProperties.get(Options.NEBULA_PLUGIN_REQUIRED_FEATURES.propertyKey).toString().split(",");
+            Features[] features = new Features[rawFeatures.length];
+            for (int i = 0; i < rawFeatures.length; i++) {
+                features[i] = Features.valueOf(rawFeatures[i]);
+            }
+            return features;
+        } else {
+            return (Features[]) Options.NEBULA_PLUGIN_REQUIRED_FEATURES.defaultValue;
+        }
     }
     
     /**
