@@ -21,8 +21,6 @@ package tk.freaxsoftware.nebula.server.lib.loader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -32,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import tk.freaxsoftware.extras.faststorage.exception.EntityProcessingException;
 import tk.freaxsoftware.extras.faststorage.ignition.FastStorageIgnition;
 import tk.freaxsoftware.extras.faststorage.storage.Handlers;
+import tk.freaxsoftware.nebula.server.lib.api.Features;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaFeature;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPlugin;
 import tk.freaxsoftware.nebula.server.lib.api.NebulaPluginConflict;
@@ -103,6 +102,37 @@ public class PluginLoader {
                 pluginRecordHandler.save(record);
             }
         }
+    }
+    
+    public Boolean startPluginsByFeatures(Features[] features) {
+        Boolean featuresStarted = true;
+        for (Features feature: features) {
+            LOGGER.info("processing feature: " + feature);
+            List<PluginRecord> featuredPlugins = pluginRecordHandler.getRecordsByFeature(feature);
+            if (featuredPlugins.isEmpty()) {
+                LOGGER.warn("No candidate for feature: " + feature);
+                featuresStarted = false;
+            } else if (featuredPlugins.size() > 1) {
+                LOGGER.info("Checking candidates for feature: " + feature);
+                Boolean atLeastOneStarted = false;
+                for (PluginRecord record: featuredPlugins) {
+                    if (record.getStatus().equals(PluginStatus.STARTED)) {
+                        atLeastOneStarted = true;
+                        break;
+                    }
+                }
+                if (!atLeastOneStarted) {
+                    LOGGER.warn("No chosen plugin for feature: " + feature);
+                    featuresStarted = false;
+                }
+            } else {
+                if (!featuredPlugins.get(0).getStatus().equals(PluginStatus.STARTED)) {
+                    LOGGER.info("Starting single candidate for feature: " + feature);
+                    installAndStart(featuredPlugins.get(0).getId());
+                }
+            }
+        }
+        return featuresStarted;
     }
     
     /**
