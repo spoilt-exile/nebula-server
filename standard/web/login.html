@@ -48,10 +48,10 @@
                         <form role="form" action="/login" method="POST">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="${lc.server_login_login_title}" name="login" type="text" autofocus>
+                                    <input class="form-control" placeholder="${lc.server_login_login_title}" title="${lc.server_login_login_required}" x-moz-errormessage="${lc.server_login_login_required}" required name="login" type="text" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="${lc.server_login_password_title}" name="password" type="password" value="">
+                                    <input class="form-control" placeholder="${lc.server_login_password_title}" title="${lc.server_login_password_required}" x-moz-errormessage="${lc.server_login_password_required}" required name="password" type="password" value="">
                                 </div>
                                 <div class="checkbox">
                                     <label>
