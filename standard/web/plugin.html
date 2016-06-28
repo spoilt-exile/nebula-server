@@ -12,6 +12,7 @@
                 <td>${lc.server_plugin_page_table_status}</td>
                 <td>${lc.server_plugin_page_table_homepage}</td>
                 <td>${lc.server_plugin_page_table_version}</td>
+                <td>${lc.server_plugin_page_table_features}</td>
                 <td>${lc.server_plugin_page_table_actions}</td>
             </tr>
         </thead>
@@ -23,6 +24,11 @@
                     <td>${record.status}</td>
                     <td><a href="${record.homepage}">${record.homepage}</a></td>
                     <td>${record.versionName}</td>
+                    <td>
+                        <#list record.features?keys as featureKey>
+                            ${featureKey}<br/>
+                        </#list>
+                    </td>
                     <td>
                         <form action="/install" method="POST">
                             <input name="recordId" type="hidden" value="${record.id}"/>
